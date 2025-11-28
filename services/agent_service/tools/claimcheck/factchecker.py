@@ -5,7 +5,7 @@ Ported to use OpenAI/Gemini instead of Ollama
 import re
 import logging
 import concurrent.futures
-from typing import Dict, Optional
+from typing import Optional
 from datetime import datetime
 from google.adk.tools import FunctionTool
 
@@ -117,7 +117,7 @@ class ClaimCheckVerifier:
         except Exception as e:
             logger.error(f"Error processing action line '{line}': {e}")
     
-    def run(self) -> Dict:
+    def run(self) -> dict:
         """
         Execute full ClaimCheck pipeline
         EXACT original logic with up to 3 iterations
@@ -296,7 +296,7 @@ class ClaimCheckVerifier:
             }
 
 
-def verify_claim_advanced(claim: str, date: Optional[str] = None) -> Dict:
+def verify_claim_advanced(claim: str, date: Optional[str] = None) -> dict:
     """
     State-of-the-art fact-checking using ClaimCheck methodology.
     
