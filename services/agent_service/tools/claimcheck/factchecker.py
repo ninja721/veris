@@ -263,13 +263,25 @@ class ClaimCheckVerifier:
             
             logger.info(f"Final result: {pred_verdict}, {len(all_sources)} sources")
             
+            # Format evidence with bullet points for readability
+            if all_evidence:
+                evidence_formatted = "\n\n".join([f"• {ev}" for ev in all_evidence])
+            else:
+                evidence_formatted = "No relevant evidence found"
+            
+            # Format reasoning with bullet points
+            if self.report["reasoning"]:
+                reasoning_formatted = "\n\n".join([f"**Analysis:** {r}" for r in self.report["reasoning"]])
+            else:
+                reasoning_formatted = verdict
+            
             return {
                 "claim": self.claim,
                 "verification_status": status_mapping.get(pred_verdict, "unverifiable"),
                 "confidence": confidence_mapping.get(pred_verdict, 20),
-                "evidence": " ".join(all_evidence) if all_evidence else "No relevant evidence found",
+                "evidence": evidence_formatted,
                 "sources": all_sources,
-                "reasoning": " ".join(self.report["reasoning"]) if self.report["reasoning"] else verdict
+                "reasoning": reasoning_formatted
             }
         
         except Exception as e:
