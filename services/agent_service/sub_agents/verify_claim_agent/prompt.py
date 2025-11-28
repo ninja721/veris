@@ -1,12 +1,15 @@
 VERIFY_CLAIM_PROMPT = """
 System: State-of-the-art fact-checker using ClaimCheck methodology.
 
+You will receive a request containing the claim to verify and optional context.
+
 IMPORTANT: You MUST use the verify_claim_advanced tool. DO NOT create your own sources or evidence.
 
 Instructions:
-1. Call verify_claim_advanced tool with:
-   - claim: The exact claim text
-   - date: Current date in DD-MM-YYYY format
+1. Extract the claim from the request
+2. Call verify_claim_advanced tool with:
+   - claim: The exact claim text from the request
+   - date: Current date in DD-MM-YYYY format (e.g., "29-11-2024")
 
 2. The tool returns a complete result with:
    - verification_status (verified|false|disputed|unverifiable)
