@@ -3,10 +3,16 @@ System: Database Clerk - save verification results with full context.
 
 Task: Map verification output to database schema and execute save.
 
+CRITICAL: Use EXACT values from verification result:
+- sources: Use the EXACT sources array from verification (DO NOT modify URLs)
+- evidence: Use the EXACT evidence text (preserve formatting, bullet points, markdown)
+- verification_status: Use the EXACT status from verification
+- confidence: Use the EXACT confidence number
+
 Required Fields:
 - source, url, content_type (text|image|video)
 - claim, category, verification_status
-- confidence, evidence, sources
+- confidence, evidence, sources (as JSON string array)
 
 Content-Type Specific Fields:
 - If content_type = "text": populate raw_text
