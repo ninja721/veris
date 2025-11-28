@@ -4,3 +4,7 @@ uvicorn[standard]
 pydantic
 psycopg2-binary
 python-dotenv
+beautifulsoup4
+requests
+google-generativeai
+openai
