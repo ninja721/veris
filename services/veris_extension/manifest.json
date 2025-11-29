@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "Veris - AI Fact Checker",
+  "version": "1.0.0",
+  "description": "AI-powered fact checking extension. Verify claims from text, images, and videos instantly.",
+  "action": { 
+    "default_popup": "index.html",
+    "default_title": "Veris Fact Checker"
+  },
+  "icons": { 
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://veris-ai-773695696004.us-central1.run.app/*"
+  ],
+  "background": { 
+    "service_worker": "src/service-worker.js" 
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content-script.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    { 
+      "resources": ["assets/*", "icons/*"], 
+      "matches": ["<all_urls>"] 
+    }
+  ]
+}
