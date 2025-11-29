@@ -1,156 +1,173 @@
-# Veris
+# Veris - AI-Powered Fact Checking Platform
 
-A production-ready monorepo for real-time content analysis and claim extraction.
+**Truth Matters.** Veris is an AI-powered fact-checking platform that helps combat misinformation by verifying claims from text, images, and videos.
 
-## Project Structure
+## 🌐 Live Deployments
+
+- **Web App**: [veris.vercel.app](https://veris.vercel.app)
+- **ADK Agent**: [veris-ai-773695696004.us-central1.run.app](https://veris-ai-773695696004.us-central1.run.app)
+
+## 🏗️ Architecture
+
+Veris is a monorepo consisting of multiple integrated services:
 
 ```
 veris/
 ├── services/
-│   └── crawler-service/          # Main crawler service
-│       ├── src/
-│       │   ├── crawlers/
-│       │   │   ├── rssCrawler.ts      # RSS feed crawler
-│       │   │   └── redditCrawler.ts   # Reddit crawler
-│       │   ├── agents/
-│       │   │   └── claimExtractorAgent.ts  # AI claim extraction
-│       │   ├── db/
-│       │   │   └── repository.ts      # Database operations
-│       │   ├── utils/
-│       │   │   └── logger.ts          # Logging utilities
-│       │   ├── types.ts               # Type definitions
-│       │   └── app.ts                 # Main application
-│       ├── package.json
-│       ├── tsconfig.json
-│       └── .env.example
+│   ├── agent_service/      # Python ADK agent for AI fact-checking
+│   ├── crawler_service/    # TypeScript RSS crawler
+│   ├── web-app/           # Next.js web application
+│   └── veris_extension/   # Chrome extension for in-browser verification
 ├── packages/
-│   └── shared/                   # Shared utilities
-│       ├── src/
-│       │   ├── dbClient.ts           # MCP database client
-│       │   ├── types.ts              # Shared types
-│       │   └── index.ts
-│       ├── package.json
-│       └── tsconfig.json
-├── infrastructure/               # Infrastructure configs (future)
-├── scripts/                      # Build/deploy scripts (future)
-├── package.json                  # Root package.json
-├── pnpm-workspace.yaml          # pnpm workspace config
-├── tsconfig.base.json           # Base TypeScript config
-└── .gitignore
-
+│   └── shared/            # Shared TypeScript utilities
+└── scripts/               # Setup and deployment scripts
 ```
 
-## Quick Start
+## 📦 Services
+
+### 1. Agent Service (Python)
+AI-powered fact-checking agent using Google ADK and ClaimCheck methodology.
+
+**Tech Stack**: Python, Google ADK, OpenAI, Gemini, PostgreSQL
+
+[📖 Read More](./services/agent_service/README.md)
+
+### 2. Crawler Service (TypeScript)
+Automated RSS feed crawler that collects claims from news sources.
+
+**Tech Stack**: TypeScript, Node.js, PostgreSQL
+
+[📖 Read More](./services/crawler_service/README.md)
+
+### 3. Web App (Next.js)
+Modern web application for submitting and viewing verified claims.
+
+**Tech Stack**: Next.js 14, React, TypeScript, Tailwind CSS, PostgreSQL
+
+[📖 Read More](./services/web-app/README.md)
+
+### 4. Chrome Extension
+Browser extension with snipping tool for instant fact-checking.
+
+**Tech Stack**: React, TypeScript, Vite, Tailwind CSS
+
+[📖 Read More](./services/veris_extension/README.md)
+
+## 🚀 Quick Start
 
 ### Prerequisites
-
-- Node.js >= 18.0.0
-- pnpm >= 8.0.0
-- uv (Python package manager for MCP server)
+- Node.js 18+
+- Python 3.11+
+- pnpm
+- PostgreSQL (Neon)
 
 ### Installation
 
+1. **Clone the repository**
 ```bash
-# Install dependencies
-pnpm install
-
-# Copy environment file
-cp services/crawler-service/.env.example services/crawler-service/.env
-
-# Edit .env and add your AI_API_KEY
+git clone <repository-url>
+cd veris
 ```
 
-### Running the Service
-
+2. **Install dependencies**
 ```bash
-# Development mode (with hot reload)
+pnpm install
+```
+
+3. **Setup environment variables**
+```bash
+# Copy example env files
+cp services/agent_service/.env.example services/agent_service/.env
+cp services/web-app/.env.local.example services/web-app/.env.local
+cp services/veris_extension/env.example services/veris_extension/.env
+
+# Edit with your credentials
+```
+
+4. **Run services**
+```bash
+# Web App
+cd services/web-app
 pnpm dev
 
-# Build all packages
-pnpm build
+# Agent Service
+cd services/agent_service
+python agent.py
 
-# Production mode
-pnpm start
+# Crawler Service
+cd services/crawler_service
+pnpm dev
+
+# Extension
+cd services/veris_extension
+pnpm dev
 ```
 
-## Configuration
+## 🔄 How It Works
 
-Edit `services/crawler-service/.env`:
+1. **Content Submission**
+   - Users submit claims via web app or extension
+   - Content can be text, images, or videos
 
-```env
-# Neon Database
-NEON_PROJECT_ID=royal-glade-24471226
-NEON_DATABASE_NAME=neondb
+2. **AI Processing**
+   - ADK agent receives submission
+   - Uses ClaimCheck methodology for verification
+   - Gathers evidence from authoritative sources
 
-# AI Configuration
-AI_API_KEY=your_openai_api_key
-AI_MODEL=gpt-4
+3. **Verification**
+   - AI analyzes claim against evidence
+   - Assigns verdict: TRUE, FALSE, DISPUTED, or UNVERIFIABLE
+   - Provides confidence score and sources
 
-# Crawler Settings
-CRAWL_INTERVAL_MS=300000
-RSS_FEEDS=https://feeds.bbci.co.uk/news/rss.xml,https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml
+4. **Display**
+   - Results appear in web app feed within 2-3 minutes
+   - Users can view evidence and sources
 
-# Logging
-LOG_LEVEL=info
-```
+## 🛠️ Technology Stack
 
-## Architecture
+**Frontend**
+- Next.js 14 (App Router)
+- React 18
+- TypeScript
+- Tailwind CSS
+- Lucide Icons
 
-### Data Flow
+**Backend**
+- Python (ADK Agent)
+- Node.js (Crawler)
+- PostgreSQL (Neon)
+- Google ADK
+- OpenAI API
+- Gemini API
 
-1. **Crawlers** (RSS + Reddit) → `RawContentItem[]`
-2. **ClaimExtractorAgent** (AI) → `ProcessedContentItem[]`
-3. **Repository** → Database storage via MCP
+**Infrastructure**
+- Vercel (Web App)
+- Google Cloud Run (ADK Agent)
+- Neon PostgreSQL (Database)
 
-### Key Components
+## 📝 Key Features
 
-- **RSSCrawler**: Fetches and parses RSS feeds, extracts full article content
-- **RedditCrawler**: Crawls Reddit posts from specified subreddits
-- **ClaimExtractorAgent**: Uses AI to extract verifiable claims from content
-- **Repository**: Manages database operations through MCP server
-- **Logger**: Centralized structured logging with Winston
+- ✅ Multi-modal verification (text, images, videos)
+- ✅ AI-powered fact-checking with ClaimCheck
+- ✅ Chrome extension with snipping tool
+- ✅ Real-time feed with infinite scroll
+- ✅ Mobile-responsive design
+- ✅ Automated RSS crawling
+- ✅ Source attribution and evidence display
 
-## Development
+## 🤝 Contributing
 
-```bash
-# Run specific service
-pnpm --filter crawler-service dev
+Each service has its own README with detailed setup instructions. Please refer to individual service documentation for contribution guidelines.
 
-# Build specific package
-pnpm --filter @veris/shared build
+## 📄 License
 
-# Clean all builds
-pnpm clean
-```
+[Add your license here]
 
-## Database Schema
+## 🔗 Links
 
-The project uses **Neon PostgreSQL** (serverless PostgreSQL):
-
-```sql
-CREATE TABLE crawled_content (
-  id TEXT PRIMARY KEY,
-  source TEXT NOT NULL,
-  url TEXT NOT NULL UNIQUE,
-  content_type TEXT NOT NULL,
-  raw_text TEXT,
-  images JSONB,
-  videos JSONB,
-  metadata JSONB,
-  claim TEXT,
-  category TEXT,
-  confidence REAL,
-  extracted_from JSONB,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-**Neon Project**: `royal-glade-24471226` (Veris)
-- Region: AWS US East 1
-- PostgreSQL Version: 17
-- Database: neondb
-
-## License
-
-MIT
+- [Web App](https://veris.vercel.app)
+- [ADK Agent](https://veris-ai-773695696004.us-central1.run.app)
+- [Agent Service Docs](./services/agent_service/README.md)
+- [Web App Docs](./services/web-app/README.md)
+- [Extension Docs](./services/veris_extension/README.md)
+- [Crawler Docs](./services/crawler_service/README.md)
