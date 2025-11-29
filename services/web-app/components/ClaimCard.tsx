@@ -65,12 +65,12 @@ export default function ClaimCard({ claim }: { claim: Claim }) {
 
       {/* Media */}
       {hasMedia ? (
-        <div className="w-full bg-neutral-100 aspect-square sm:aspect-video relative overflow-hidden">
+        <div className="w-full bg-neutral-100">
           {claim.images && claim.images.length > 0 && (
             <img
               src={claim.images[0]}
               alt="Claim evidence"
-              className="w-full h-full object-cover"
+              className="w-full h-auto"
               onError={(e) => {
                 e.currentTarget.style.display = 'none'
               }}
@@ -80,7 +80,7 @@ export default function ClaimCard({ claim }: { claim: Claim }) {
             <video
               src={claim.videos[0]}
               controls
-              className="w-full h-full object-cover"
+              className="w-full h-auto"
             />
           )}
         </div>

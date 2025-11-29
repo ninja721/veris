@@ -106,49 +106,49 @@ export default function SubmitPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4">
+    <div className="max-w-2xl mx-auto py-4 sm:py-8 px-4">
       <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
         {/* Header */}
-        <div className="border-b border-neutral-200 p-4 flex items-center justify-between bg-white sticky top-0 z-10">
-          <h1 className="text-lg font-semibold text-neutral-900">Create new verification</h1>
-          {loading && <span className="text-sm text-neutral-500">Processing...</span>}
+        <div className="border-b border-neutral-200 p-3 sm:p-4 flex items-center justify-between bg-white sticky top-0 z-10">
+          <h1 className="text-base sm:text-lg font-semibold text-neutral-900">Create new verification</h1>
+          {loading && <span className="text-xs sm:text-sm text-neutral-500">Processing...</span>}
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Mode Selector */}
-          <div className="flex gap-2 mb-6 p-1 bg-neutral-100 rounded-lg w-fit">
+          <div className="flex gap-1 sm:gap-2 mb-4 sm:mb-6 p-1 bg-neutral-100 rounded-lg w-full sm:w-fit overflow-x-auto">
             <button
               onClick={() => setMode('text')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${mode === 'text' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
+              className={`flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${mode === 'text' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
                 }`}
             >
-              <Type size={18} />
+              <Type size={16} className="sm:w-[18px] sm:h-[18px]" />
               Text
             </button>
             <button
               onClick={() => setMode('image')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${mode === 'image' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
+              className={`flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${mode === 'image' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
                 }`}
             >
-              <Image size={18} />
+              <Image size={16} className="sm:w-[18px] sm:h-[18px]" />
               Image
             </button>
             <button
               onClick={() => setMode('video')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${mode === 'video' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
+              className={`flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${mode === 'video' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
                 }`}
             >
-              <Video size={18} />
+              <Video size={16} className="sm:w-[18px] sm:h-[18px]" />
               Video
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {mode === 'text' ? (
               <textarea
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                className="w-full min-h-[300px] p-4 text-lg border-none focus:ring-0 resize-none placeholder:text-neutral-400"
+                className="w-full min-h-[200px] sm:min-h-[300px] p-3 sm:p-4 text-base sm:text-lg border-none focus:ring-0 resize-none placeholder:text-neutral-400"
                 placeholder="What would you like to verify today?"
                 autoFocus
               />
@@ -185,17 +185,17 @@ export default function SubmitPage() {
                     </button>
                   </div>
                 ) : (
-                  <div className="text-center p-8">
-                    <div className="w-16 h-16 bg-neutral-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Upload size={32} className="text-neutral-500" />
+                  <div className="text-center p-4 sm:p-8">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-neutral-200 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                      <Upload size={24} className="sm:w-8 sm:h-8 text-neutral-500" />
                     </div>
-                    <p className="text-lg font-medium text-neutral-900 mb-2">
+                    <p className="text-base sm:text-lg font-medium text-neutral-900 mb-2">
                       Drag photos or videos here
                     </p>
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="text-blue-500 font-semibold hover:text-blue-600"
+                      className="text-sm sm:text-base text-blue-500 font-semibold hover:text-blue-600"
                     >
                       Select from computer
                     </button>
@@ -215,17 +215,17 @@ export default function SubmitPage() {
               <textarea
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                className="w-full p-3 border-t border-neutral-100 focus:ring-0 resize-none text-sm"
+                className="w-full p-2 sm:p-3 border-t border-neutral-100 focus:ring-0 resize-none text-xs sm:text-sm"
                 placeholder="Add a caption or context..."
                 rows={3}
               />
             )}
 
-            <div className="flex items-center justify-end pt-4 border-t border-neutral-100">
+            <div className="flex items-center justify-end pt-3 sm:pt-4 border-t border-neutral-100">
               <button
                 type="submit"
                 disabled={loading || (mode === 'text' && !text.trim()) || ((mode === 'image' || mode === 'video') && !file)}
-                className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full sm:w-auto px-6 py-2.5 sm:py-2 bg-blue-500 text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? 'Verifying...' : 'Verify'}
               </button>
@@ -236,17 +236,17 @@ export default function SubmitPage() {
 
       {/* Result Notification */}
       {result && (
-        <div className={`mt-6 p-4 rounded-lg border ${result.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
+        <div className={`mt-4 sm:mt-6 p-3 sm:p-4 rounded-lg border ${result.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
           }`}>
-          <div className="flex items-center gap-3">
-            <div className={`text-2xl ${result.success ? 'text-green-500' : 'text-red-500'}`}>
+          <div className="flex items-start sm:items-center gap-2 sm:gap-3">
+            <div className={`text-xl sm:text-2xl flex-shrink-0 ${result.success ? 'text-green-500' : 'text-red-500'}`}>
               {result.success ? '✓' : '✕'}
             </div>
-            <div>
-              <h3 className={`font-medium ${result.success ? 'text-green-900' : 'text-red-900'}`}>
+            <div className="flex-1 min-w-0">
+              <h3 className={`text-sm sm:text-base font-medium ${result.success ? 'text-green-900' : 'text-red-900'}`}>
                 {result.success ? 'Verification Started' : 'Submission Failed'}
               </h3>
-              <p className={`text-sm ${result.success ? 'text-green-700' : 'text-red-700'}`}>
+              <p className={`text-xs sm:text-sm ${result.success ? 'text-green-700' : 'text-red-700'}`}>
                 {result.message}
               </p>
             </div>
