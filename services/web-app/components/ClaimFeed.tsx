@@ -101,7 +101,7 @@ export default function ClaimFeed() {
         <div className="bg-red-50 border border-red-200 rounded-xl p-12 text-center">
           <p className="text-red-600">Error: {error}</p>
           <button 
-            onClick={fetchClaims}
+            onClick={() => fetchClaims(1)}
             className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
           >
             Retry
@@ -117,7 +117,7 @@ export default function ClaimFeed() {
         <div className="bg-white border border-neutral-200 rounded-xl p-12 text-center">
           <p className="text-neutral-600">No claims yet. Check back soon!</p>
           <button 
-            onClick={fetchClaims}
+            onClick={() => fetchClaims(1)}
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             Refresh
