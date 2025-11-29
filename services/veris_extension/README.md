@@ -1,364 +1,156 @@
-# Extension Bro
+# Veris Chrome Extension
 
-> A modern Chrome extension boilerplate with premium UI design, React, TypeScript, Vite, and Tailwind CSS.
+Browser extension for instant fact-checking with a snipping tool.
 
-Build professional Chrome extensions with a beautiful, production-ready foundation.
+## Features
 
-## ✨ Highlights
+- **Snipping Tool**: Drag to select any area on any webpage
+- **Screenshot Capture**: Automatically captures selected area as image
+- **Direct ADK Integration**: Sends directly to Veris AI agent
+- **Instant Verification**: Results appear in web app feed in 2-3 minutes
 
-- 🎨 **Premium UI Design** - Luxury gradients inspired by Apple, Google, Uber
-- 🎯 **Professional Icons** - Auto-generated high-quality icons
-- 🌈 **Modern Color Palette** - Purple, pink, and luxury themes
-- 🔔 **Toast Notifications** - Beautiful feedback system
-- ⚡ **Loading States** - Smooth spinners and animations
-- 📚 **Clean Documentation** - Essential guides only
-- 🎨 **Design System** - Reusable design tokens
+## Installation
 
-## 🚀 Features
+### Development
 
-- ⚡ **Vite** - Lightning-fast HMR and build
-- ⚛️ **React 18** - Modern React with hooks
-- 🎨 **Tailwind CSS** - Utility-first styling with luxury design tokens
-- 📘 **TypeScript** - Full type safety
-- 🔧 **Manifest V3** - Latest Chrome extension standard
-- 🎯 **Content Scripts** - Inject code into web pages
-- 🔄 **Service Worker** - Background processing
-- 💬 **Message Passing** - Communication between components
-- 🧪 **Vitest** - Fast unit testing
-- 🎨 **Premium Design System** - Professional UI components and patterns
-
-## 📁 Project Structure
-
-```
-chrome-extension-boilerplate/
-├── src/
-│   ├── popup/              # Extension popup UI (React app)
-│   │   ├── App.tsx         # Main popup component
-│   │   └── main.tsx        # Popup entry point
-│   │
-│   ├── content/            # Content scripts (injected into web pages)
-│   │   └── content.ts      # Main content script
-│   │
-│   ├── background/         # Service worker (background tasks)
-│   │   └── service-worker.ts
-│   │
-│   ├── shared/             # Shared utilities and types
-│   │   ├── messaging.ts    # Message passing helpers
-│   │   └── storage.ts      # Chrome storage helpers
-│   │
-│   └── types/              # TypeScript type definitions
-│       └── index.ts
-│
-├── public/                 # Static assets
-│   └── icons/              # Extension icons
-│
-├── index.html              # Popup HTML template
-├── manifest.json           # Extension manifest
-├── vite.config.ts          # Vite configuration
-├── tailwind.config.js      # Tailwind configuration
-└── package.json
+1. **Install dependencies**
+```bash
+pnpm install
 ```
 
-## 🎯 Component Overview
+2. **Setup environment**
+```bash
+cp env.example .env
+# Edit .env with your ADK agent URL
+```
 
-### 1. **Popup** (`src/popup/`)
-The UI that appears when users click the extension icon in the toolbar.
-- Built with React
-- Styled with Tailwind CSS
-- Can communicate with content scripts and service worker
+3. **Build extension**
+```bash
+pnpm build
+```
 
-### 2. **Content Script** (`src/content/`)
-JavaScript that runs in the context of web pages.
-- Can access and modify the DOM
-- Isolated from page scripts
-- Communicates via message passing
+4. **Load in Chrome**
+   - Open `chrome://extensions/`
+   - Enable "Developer mode"
+   - Click "Load unpacked"
+   - Select the `dist` folder
 
-### 3. **Service Worker** (`src/background/`)
-Background script that handles events and long-running tasks.
-- Manages extension lifecycle
-- Handles browser events
-- Coordinates between popup and content scripts
-
-## 🛠️ Quick Start
+### Development Mode
 
 ```bash
-# 1. Install dependencies
-npm install
-
-# 2. Build the extension
-npm run build
-
-# 3. Load in Chrome
-# - Open chrome://extensions/
-# - Enable "Developer mode"
-# - Click "Load unpacked"
-# - Select the "dist" folder
-
-# 4. Start developing
-npm run dev  # For UI development
-npm run build  # For testing features
+pnpm dev
 ```
 
-### Available Commands
+This starts Vite dev server. Reload extension in Chrome after changes.
+
+## Usage
+
+1. Click Veris extension icon
+2. Click "Capture Area" button
+3. Drag to select area on page
+4. Screenshot captured automatically
+5. Click "Verify Claim" to submit
+6. Check web app feed in 2-3 minutes
+
+## Tech Stack
+
+- React 18
+- TypeScript
+- Vite
+- Tailwind CSS
+- Chrome Extension Manifest V3
+
+## Architecture
+
+```
+src/
+├── popup/              # Extension popup UI
+│   ├── App.tsx        # Main popup component
+│   └── main.tsx       # Entry point
+├── content/           # Content script (runs on pages)
+│   └── content.ts     # Snipping tool implementation
+├── background/        # Service worker
+│   └── service-worker.ts
+└── styles/
+    └── globals.css    # Tailwind styles
+```
+
+## Configuration
+
+### Environment Variables
+
+```env
+VITE_ADK_AGENT_URL=https://veris-ai-773695696004.us-central1.run.app
+VITE_APP_NAME=veris_agent
+```
+
+### Manifest Permissions
+
+- `activeTab`: Access current tab for screenshots
+- `scripting`: Execute content scripts
+- `storage`: Store captured content
+- Host permissions for ADK agent
+
+## How It Works
+
+1. **User clicks "Capture Area"**
+   - Popup closes
+   - Content script activates snipping mode
+
+2. **User drags to select area**
+   - Blue selection box shows selected area
+   - ESC to cancel
+
+3. **Screenshot captured**
+   - Uses `chrome.tabs.captureVisibleTab`
+   - Crops to selected area
+   - Saves to `chrome.storage.local`
+
+4. **Popup reopens**
+   - Loads screenshot from storage
+   - Shows preview
+
+5. **User clicks "Verify Claim"**
+   - Creates ADK session
+   - Sends base64 image to agent
+   - Shows success message
+
+## Development
+
+### Build Commands
 
 ```bash
-npm run dev        # Start dev server (UI development)
-npm run build      # Build extension (feature testing)
-npm run typecheck  # Check TypeScript types
-npm test           # Run tests
-npm run zip        # Create distribution ZIP
+pnpm dev          # Development mode with HMR
+pnpm build        # Production build
+pnpm preview      # Preview production build
 ```
 
-## 🎨 Customization
+### File Structure
 
-### Change Extension Name & Branding
+- `manifest.json`: Extension configuration
+- `index.html`: Popup HTML
+- `vite.config.ts`: Vite configuration
+- `tailwind.config.js`: Tailwind configuration
 
-Edit `manifest.json`:
-```json
-{
-  "name": "Your Extension Name",
-  "description": "Your extension description"
-}
-```
+## Troubleshooting
 
-### Customize Colors
+**Extension not loading?**
+- Check manifest.json is valid
+- Ensure all permissions are granted
+- Reload extension after changes
 
-Edit `tailwind.config.js`:
-```js
-colors: {
-  primary: {
-    500: '#YOUR_COLOR',
-  }
-}
-```
+**Screenshot not capturing?**
+- Refresh the page and try again
+- Check console for errors
+- Ensure host permissions are set
 
-### Regenerate Icons
+**Can't connect to ADK agent?**
+- Check VITE_ADK_AGENT_URL in .env
+- Verify agent is running
+- Check network tab for errors
 
-Modify colors in `scripts/generate-icons.js`, then run:
-```bash
-npm run generate-icons
-```
+## Links
 
-## 📝 How to Use This Boilerplate
-
-### Adding Popup UI Features
-
-Edit `src/popup/App.tsx`:
-
-```tsx
-export default function App() {
-  const handleClick = async () => {
-    // Send message to content script
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    chrome.tabs.sendMessage(tab.id!, { type: 'DO_SOMETHING' });
-  };
-
-  return (
-    <div className="p-4">
-      <button onClick={handleClick}>Click Me</button>
-    </div>
-  );
-}
-```
-
-### Modifying Web Pages (Content Script)
-
-Edit `src/content/content.ts`:
-
-```typescript
-// Listen for messages from popup
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'DO_SOMETHING') {
-    // Modify the page
-    document.body.style.backgroundColor = 'lightblue';
-    sendResponse({ success: true });
-  }
-  return true;
-});
-```
-
-### Background Tasks (Service Worker)
-
-Edit `src/background/service-worker.ts`:
-
-```typescript
-// Listen for extension installation
-chrome.runtime.onInstalled.addListener(() => {
-  console.log('Extension installed!');
-});
-
-// Handle messages
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'BACKGROUND_TASK') {
-    // Do background work
-    sendResponse({ result: 'done' });
-  }
-  return true;
-});
-```
-
-## 🔧 Configuration
-
-### Permissions
-
-Edit `manifest.json` to add required permissions:
-
-```json
-{
-  "permissions": [
-    "storage",      // Chrome storage API
-    "activeTab",    // Access active tab
-    "scripting"     // Inject scripts
-  ],
-  "host_permissions": [
-    "<all_urls>"    // Access all websites (adjust as needed)
-  ]
-}
-```
-
-### Content Script Matching
-
-Control which pages your content script runs on:
-
-```json
-{
-  "content_scripts": [
-    {
-      "matches": ["https://*.example.com/*"],  // Only example.com
-      "js": ["src/content-script.js"]
-    }
-  ]
-}
-```
-
-## 📚 Key Concepts
-
-### Message Passing
-
-Communication between different parts of the extension:
-
-```typescript
-// From popup to content script
-const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-const response = await chrome.tabs.sendMessage(tab.id!, { type: 'HELLO' });
-
-// From content script to service worker
-const response = await chrome.runtime.sendMessage({ type: 'HELLO' });
-
-// Listening for messages (any component)
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('Received:', message);
-  sendResponse({ received: true });
-  return true; // Keep channel open for async response
-});
-```
-
-### Storage
-
-Persist data across sessions:
-
-```typescript
-// Save data
-await chrome.storage.local.set({ key: 'value' });
-
-// Retrieve data
-const result = await chrome.storage.local.get(['key']);
-console.log(result.key); // 'value'
-
-// Listen for changes
-chrome.storage.onChanged.addListener((changes, area) => {
-  console.log('Storage changed:', changes);
-});
-```
-
-## 🎨 Styling
-
-This boilerplate uses Tailwind CSS. Customize in `tailwind.config.js`:
-
-```javascript
-export default {
-  theme: {
-    extend: {
-      colors: {
-        primary: '#3b82f6',
-        // Add your colors
-      },
-    },
-  },
-};
-```
-
-## 🧪 Testing
-
-Write tests in `src/**/*.test.ts`:
-
-```typescript
-import { describe, it, expect } from 'vitest';
-
-describe('My Feature', () => {
-  it('should work', () => {
-    expect(true).toBe(true);
-  });
-});
-```
-
-## 📦 Building for Production
-
-```bash
-npm run build
-```
-
-This creates an optimized build in the `dist` folder ready for:
-- Chrome Web Store submission
-- Distribution as unpacked extension
-
-### Creating a ZIP for Chrome Web Store
-
-```bash
-npm run zip
-```
-
-## 🔍 Troubleshooting
-
-### Content script not loading
-- Check `matches` pattern in `manifest.json`
-- Reload the extension in `chrome://extensions/`
-- Refresh the web page
-
-### Popup not updating
-- Hard refresh the popup (right-click → Reload)
-- Check console for errors (right-click popup → Inspect)
-
-### Service worker issues
-- Check service worker console in `chrome://extensions/` → "Inspect views: service worker"
-- Service workers auto-sleep; use `chrome.runtime.onMessage` to wake them
-
-## 📖 Documentation
-
-### Essential Guides
-- 🚀 **[START_HERE.md](./START_HERE.md)** - New? Start here!
-- 📘 **[QUICKSTART.md](./QUICKSTART.md)** - Get started in 5 minutes
-- ✨ **[FEATURES.md](./FEATURES.md)** - See what's included
-- 🔧 **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Development patterns and best practices
-- 💡 **[EXAMPLES.md](./EXAMPLES.md)** - 8+ practical code examples
-- 📚 **[API.md](./API.md)** - Complete API reference
-- 🎨 **[DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md)** - Design tokens and usage
-- 🔧 **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Fix common issues
-- 📁 **[STRUCTURE.md](./STRUCTURE.md)** - Project organization
-- 🤝 **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Contribution guide
-
-## 📖 External Resources
-
-- [Chrome Extension Docs](https://developer.chrome.com/docs/extensions/)
-- [Manifest V3 Migration](https://developer.chrome.com/docs/extensions/mv3/intro/)
-- [Vite Documentation](https://vitejs.dev/)
-- [React Documentation](https://react.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-
-## 🤝 Contributing
-
-Contributions are welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
-
-## 📄 License
-
-MIT License - See [LICENSE](./LICENSE) for details. Use freely for your projects!
+- [Main Project](../../README.md)
+- [Web App](../web-app/README.md)
+- [ADK Agent](../agent_service/README.md)

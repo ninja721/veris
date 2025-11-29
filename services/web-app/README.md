@@ -1,116 +1,193 @@
-# Veris Web App - Beautiful Fact-Checking Platform
+# Veris Web App
 
-## Overview
-A stunning Next.js social media-style platform for viewing and submitting claims for fact-checking.
+Modern web application for submitting and viewing AI-verified claims.
 
 ## Features
 
-### 1. Feed Page (`/`)
-- **Beautiful Card Layout**: Claims displayed in elegant cards
-- **Color-Coded Status**:
-  - ✅ Verified: Green
-  - ❌ False: Red  
-  - ⚠️ Disputed: Orange
-  - ❓ Unverifiable: Gray
-- **Rich Information**:
-  - Claim text
-  - Verification status with confidence score
-  - Evidence summary
-  - Source links
-  - Category badges
-  - Timestamp
-- **Filters**: By status, category, date
-- **Infinite Scroll**: Load more as you scroll
+- **Multi-modal Submission**: Submit text, images, or videos
+- **Real-time Feed**: View verified claims with infinite scroll
+- **Mobile Responsive**: Works on all devices
+- **Source Attribution**: View evidence and sources for each claim
+- **Status Indicators**: TRUE, FALSE, DISPUTED, UNVERIFIABLE badges
 
-### 2. Submit Page (`/submit`)
-- **Upload Options**:
-  - Text input
-  - Image upload
-  - Video upload
-- **Beautiful Upload UI**: Drag & drop with preview
-- **Real-time Processing**: Shows progress
-- **Result Display**: Immediate verification result
+## Tech Stack
 
-### 3. API Routes
-- `/api/db` - Database queries (Neon PostgreSQL)
-- `/api/claims` - Fetch claims with pagination
-- `/api/submit` - Submit new claim to ADK agent
+- Next.js 14 (App Router)
+- React 18
+- TypeScript
+- Tailwind CSS
+- PostgreSQL (Neon)
+- Lucide Icons
 
-## Design System
+## Getting Started
 
-### Colors (Psychology-Based)
-- **Primary Blue**: Trust, credibility, professionalism
-- **Success Green**: Truth, verified, positive
-- **Danger Red**: False, warning, attention
-- **Warning Orange**: Disputed, caution
-- **Neutral Gray**: Unverifiable, neutral
+### Prerequisites
 
-### Typography
-- **Font**: Inter (clean, professional, readable)
-- **Hierarchy**: Clear heading sizes
-- **Line Height**: Comfortable reading
+- Node.js 18+
+- pnpm
+- PostgreSQL database (Neon)
 
-### Components
-- Cards with subtle shadows
-- Smooth transitions
-- Hover effects
-- Loading states
-- Empty states
+### Installation
 
-## Installation
-
+1. **Install dependencies**
 ```bash
-cd services/web-app
 pnpm install
-pnpm dev
 ```
 
-## Environment Variables
-
+2. **Setup environment**
+```bash
+cp .env.local.example .env.local
 ```
-NEON_PROJECT_ID=royal-glade-24471226
-NEON_DATABASE_NAME=neondb
+
+Edit `.env.local`:
+```env
+# Database
+DATABASE_URL=postgresql://...
+
+# ADK Agent
 NEXT_PUBLIC_ADK_AGENT_URL=https://veris-ai-773695696004.us-central1.run.app
 ```
 
-## File Structure
+3. **Run development server**
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+## Project Structure
 
 ```
 app/
-├── layout.tsx          # Root layout with nav
-├── page.tsx            # Feed page
-├── submit/
-│   └── page.tsx        # Submit claim page
 ├── api/
-│   ├── db/route.ts     # Database API
-│   ├── claims/route.ts # Claims API
-│   └── submit/route.ts # Submit API
-├── globals.css         # Tailwind + custom styles
+│   ├── claims/         # GET claims with pagination
+│   └── submit/         # POST submit for verification
+├── submit/             # Claim submission page
+├── layout.tsx          # Root layout
+└── page.tsx            # Home feed
+
 components/
-├── ClaimCard.tsx       # Beautiful claim card
-├── StatusBadge.tsx     # Status badge component
-├── UploadZone.tsx      # Drag & drop upload
-└── LoadingSpinner.tsx  # Loading state
+├── ClaimCard.tsx       # Individual claim display
+├── ClaimFeed.tsx       # Feed with infinite scroll
+├── Sidebar.tsx         # Desktop navigation
+├── BottomNav.tsx       # Mobile navigation
+└── RightSidebar.tsx    # Trending sidebar
+
 lib/
-├── db.ts               # Database client
-└── types.ts            # TypeScript types
+└── db.ts              # Database queries
 ```
 
-## Next Steps
+## API Routes
 
-1. Install dependencies: `pnpm install`
-2. Run development server: `pnpm dev`
-3. Open http://localhost:3000
-4. View feed of verified claims
-5. Submit new claims for verification
+### GET /api/claims
 
-## Features to Implement
+Fetch claims with pagination.
 
-The complete implementation requires creating:
-- All component files
-- API routes for database and ADK agent
-- Beautiful UI with animations
-- Image/video upload handling
-- Real-time updates
+**Query Parameters:**
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 10)
 
-Would you like me to continue creating the remaining files?
+**Response:**
+```json
+{
+  "success": true,
+  "claims": [...],
+  "page": 1,
+  "limit": 10,
+  "hasMore": true
+}
+```
+
+### POST /api/submit
+
+Submit content for verification.
+
+**Body (FormData):**
+- `text`: Text claim (required for text mode)
+- `file`: Image/video file (required for media mode)
+
+**Response:**
+```json
+{
+  "success": true,
+  "status": "submitted",
+  "message": "Your submission has been sent for AI verification..."
+}
+```
+
+## Features
+
+### Infinite Scroll
+
+Feed automatically loads more claims as you scroll. Loads 10 claims per page.
+
+### Mobile Responsive
+
+- Desktop: Sidebar + Feed + Right sidebar
+- Tablet: Sidebar + Feed
+- Mobile: Bottom nav + Feed
+
+### Claim Submission
+
+1. Choose mode: Text, Image, or Video
+2. Enter/upload content
+3. Click "Verify"
+4. Check feed in 2-3 minutes
+
+## Database Schema
+
+```sql
+CREATE TABLE crawled_content (
+  id TEXT PRIMARY KEY,
+  source TEXT,
+  url TEXT,
+  content_type TEXT,
+  claim TEXT,
+  category TEXT,
+  verification_status TEXT,
+  confidence NUMERIC,
+  evidence TEXT,
+  verification_sources TEXT[],
+  images TEXT[],
+  videos TEXT[],
+  created_at TIMESTAMP
+);
+```
+
+## Deployment
+
+### Vercel
+
+1. Push to GitHub
+2. Import to Vercel
+3. Add environment variables
+4. Deploy
+
+**Environment Variables:**
+- `DATABASE_URL`
+- `NEXT_PUBLIC_ADK_AGENT_URL`
+
+## Development
+
+### Commands
+
+```bash
+pnpm dev          # Development server
+pnpm build        # Production build
+pnpm start        # Start production server
+pnpm lint         # Run ESLint
+```
+
+### Adding New Features
+
+1. Create component in `components/`
+2. Add route in `app/`
+3. Update API routes if needed
+4. Test on mobile and desktop
+
+## Links
+
+- [Main Project](../../README.md)
+- [Chrome Extension](../veris_extension/README.md)
+- [ADK Agent](../agent_service/README.md)
+- [Live Demo](https://veris.vercel.app)
