@@ -1,81 +1,121 @@
-# Veris Agent Service
+# Veris Agent Service - State-of-the-Art Fact-Checking AI
 
-AI fact-checking system using Google ADK that extracts, verifies, and stores claims.
+Agentic AI system implementing ClaimCheck methodology for real-time fact verification.
 
-## Architecture
+## 🔬 Research-Backed Approach
 
-**Root Agent (Veris)** orchestrates three sub-agents:
-1. **Claim Extraction Agent** - Extracts verifiable claims from content
-2. **Verify Claim Agent** - Fact-checks claims using Google Search
-3. **Save Verified Claim Agent** - Stores verification results to database
+This agent implements **ClaimCheck** [1], a state-of-the-art real-time fact-checking system from the University of Texas at Arlington. ClaimCheck uses small language models with a tiered source verification strategy to achieve high accuracy while maintaining speed.
+
+**Reference**: Putta, A. R., Devasier, J., & Li, C. (2024). *ClaimCheck: Real-Time Fact-Checking with Small Language Models*. University of Texas at Arlington.
+
+## Key Features
+
+- **Tiered Source Strategy**: Verifies claims using authoritative sources in priority order
+- **Multi-Model Support**: OpenAI GPT-4 and Google Gemini integration
+- **Confidence Scoring**: 0-100% confidence with evidence attribution
+- **Multi-Modal**: Handles text, images, and videos
+- **Real-Time**: 2-3 minute verification time
+
+## Tech Stack
+
+- Python 3.11+
+- Google ADK (Agent Development Kit)
+- OpenAI API (GPT-4)
+- Google Gemini API
+- PostgreSQL (Neon)
+- ClaimCheck Methodology
+
+## How It Works
+
+1. **Claim Reception**: Receives claims from web app or extension
+2. **Source Gathering**: Uses ClaimCheck's tiered source strategy
+3. **Evidence Analysis**: AI analyzes claim against gathered evidence
+4. **Verdict Assignment**: TRUE, FALSE, DISPUTED, or UNVERIFIABLE
+5. **Database Storage**: Stores results for feed display
+
+## ClaimCheck Implementation
+
+Our implementation follows the ClaimCheck paper's methodology:
+
+- **Tier 1 Sources**: Fact-checking organizations (Snopes, PolitiFact)
+- **Tier 2 Sources**: News agencies (Reuters, AP)
+- **Tier 3 Sources**: Academic and government sources
+- **Confidence Scoring**: Based on source agreement and quality
 
 ## Setup
 
+### Prerequisites
+
+- Python 3.11+
+- OpenAI API key
+- Google Gemini API key
+- PostgreSQL database
+
+### Installation
+
 ```bash
-# Install dependencies
+cd services/agent_service
 pip install -r requirements.txt
-
-# Configure environment
-cp .env.example .env
-# Edit .env with your credentials
 ```
 
-### Environment Variables
+### Configuration
 
+Create `.env`:
 ```env
-GEMINI_MODEL=gemini-2.0-flash-exp
-GEMINI_API_KEY=your_api_key
-NEON_PROJECT_ID=your_project_id
-NEON_DATABASE_NAME=neondb
-DATABASE_URL=postgresql://user:pass@host/db
+AI_API_KEY=your_openai_key
+GEMINI_API_KEY=your_gemini_key
+DATABASE_URL=postgresql://...
 ```
 
-## Usage
+### Run
 
-```python
-from agent_service import root_agent
+```bash
+python agent.py
+```
 
-content = {
-    "source": "BBC News",
-    "url": "https://example.com/article",
-    "content_type": "text",
-    "raw_text": "Your content here..."
+## API Endpoints
+
+### POST /run_sse
+Submit claim for verification
+
+**Body**:
+```json
+{
+  "app_name": "veris_agent",
+  "user_id": "user_id",
+  "session_id": "session_id",
+  "newMessage": {
+    "role": "user",
+    "parts": [
+      {
+        "text": "Claim text"
+      }
+    ]
+  }
 }
-
-result = root_agent.run(content)
 ```
-
-## Database Schema
-
-Saves to `crawled_content` table:
-- `verification_status`: verified/false/partially_true/unverifiable/disputed
-- `confidence`: 0-100 score
-- `evidence`: Summary of findings
-- `verification_sources`: JSONB array of source URLs
-
-## Claim Categories
-
-- health, politics, science, technology, finance, general
-
-## Confidence Scores
-
-- 90-100: Very strong evidence
-- 70-89: Strong evidence
-- 50-69: Moderate evidence
-- 30-49: Weak evidence
-- 0-29: Very weak evidence
 
 ## Project Structure
 
 ```
 agent_service/
-├── agent.py                           # Root agent
-├── prompt.py                          # Root prompt
-├── database/                          # Database module
-│   ├── client.py                      # DB client
-│   └── operations.py                  # DB operations
-└── sub_agents/
-    ├── claim_extraction_agent/
-    ├── verify_claim_agent/
-    └── save_verified_claim_agent/
+├── agent.py              # Main agent entry point
+├── prompt.py             # System prompts
+├── model_callbacks.py    # AI model integration
+├── tools/
+│   └── claimcheck/      # ClaimCheck implementation
+│       ├── factchecker.py
+│       ├── modules.py
+│       ├── prompts.py
+│       └── web_tools.py
+├── sub_agents/
+│   └── verify_claim_agent/  # Verification logic
+└── database/            # Database operations
 ```
+
+## Links
+
+- [Main Project](../../README.md)
+- [Web App](../web-app/README.md)
+- [Chrome Extension](../veris_extension/README.md)
+- [ClaimCheck Paper](https://arxiv.org/abs/2410.08376)
