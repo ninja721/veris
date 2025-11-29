@@ -215,7 +215,7 @@ export default function App() {
   const isExtensionContext = typeof chrome !== 'undefined' && chrome.runtime?.id
 
   return (
-    <div className="w-[420px] min-h-[600px] bg-white relative overflow-hidden">
+    <div className="w-[420px] max-h-[600px] bg-white relative overflow-y-auto">
       <div className="p-6 space-y-5">
         {/* Notification Toast */}
         {notification && (
@@ -277,7 +277,7 @@ export default function App() {
             <img
               src={`data:image/png;base64,${capturedContent.data}`}
               alt="Captured screenshot"
-              className="w-full rounded-lg border border-neutral-200"
+              className="w-full h-auto rounded-lg border border-neutral-200"
             />
           </div>
         )}

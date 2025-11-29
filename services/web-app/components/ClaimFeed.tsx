@@ -21,31 +21,67 @@ interface Claim {
 export default function ClaimFeed() {
   const [claims, setClaims] = useState<Claim[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
 
   useEffect(() => {
     console.log('ClaimFeed mounted, fetching claims...')
-    fetchClaims()
+    fetchClaims(1)
   }, [])
 
-  async function fetchClaims() {
-    console.log('Fetching claims from /api/claims')
+  useEffect(() => {
+    const handleScroll = () => {
+      if (loadingMore || !hasMore) return
+
+      const scrollTop = window.scrollY
+      const windowHeight = window.innerHeight
+      const documentHeight = document.documentElement.scrollHeight
+
+      // Load more when user is 500px from bottom
+      if (scrollTop + windowHeight >= documentHeight - 500) {
+        loadMore()
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [loadingMore, hasMore, page])
+
+  async function fetchClaims(pageNum: number) {
+    console.log('Fetching claims page:', pageNum)
     try {
-      const res = await fetch('/api/claims')
+      const res = await fetch(`/api/claims?page=${pageNum}&limit=10`)
       console.log('Response status:', res.status)
       
       const data = await res.json()
       console.log('Response data:', data)
       console.log('Claims count:', data.claims?.length || 0)
       
-      setClaims(data.claims || [])
+      if (pageNum === 1) {
+        setClaims(data.claims || [])
+      } else {
+        setClaims(prev => [...prev, ...(data.claims || [])])
+      }
+      
+      setHasMore(data.hasMore)
+      setPage(pageNum)
     } catch (error) {
       console.error('Failed to fetch claims:', error)
       setError(error instanceof Error ? error.message : 'Unknown error')
     } finally {
       setLoading(false)
+      setLoadingMore(false)
       console.log('Loading complete')
     }
+  }
+
+  async function loadMore() {
+    if (loadingMore || !hasMore) return
+    
+    setLoadingMore(true)
+    await fetchClaims(page + 1)
   }
 
   console.log('Render state:', { loading, claimsCount: claims.length, error })
@@ -97,6 +133,18 @@ export default function ClaimFeed() {
       {claims.map((claim) => (
         <ClaimCard key={claim.id} claim={claim} />
       ))}
+      
+      {loadingMore && (
+        <div className="flex justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+      )}
+      
+      {!hasMore && claims.length > 0 && (
+        <div className="text-center py-8">
+          <p className="text-sm text-neutral-500">You've reached the end</p>
+        </div>
+      )}
     </div>
   )
 }

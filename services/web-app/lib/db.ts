@@ -16,7 +16,7 @@ export interface Claim {
 }
 
 // Connect to Neon PostgreSQL using the same connection as agent service
-export async function queryClaims(): Promise<Claim[]> {
+export async function queryClaims(limit: number = 50, offset: number = 0): Promise<Claim[]> {
   try {
     const { Pool } = await import('pg');
     const pool = new Pool({
@@ -32,8 +32,8 @@ export async function queryClaims(): Promise<Claim[]> {
       FROM crawled_content
       WHERE claim IS NOT NULL
       ORDER BY created_at DESC
-      LIMIT 50
-    `);
+      LIMIT $1 OFFSET $2
+    `, [limit, offset]);
 
     await pool.end();
 
