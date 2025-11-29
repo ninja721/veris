@@ -190,4 +190,4 @@ pnpm lint         # Run ESLint
 - [Main Project](../../README.md)
 - [Chrome Extension](../veris_extension/README.md)
 - [ADK Agent](../agent_service/README.md)
-- [Live Demo](https://veris.vercel.app)
+- [Live Demo](https://veris-web-app.vercel.app)
