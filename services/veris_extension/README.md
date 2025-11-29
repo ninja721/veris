@@ -45,12 +45,36 @@ This starts Vite dev server. Reload extension in Chrome after changes.
 
 ## Usage
 
-1. Click Veris extension icon
-2. Click "Capture Area" button
-3. Drag to select area on page
-4. Screenshot captured automatically
-5. Click "Verify Claim" to submit
-6. Check web app feed in 2-3 minutes
+### Step-by-Step Guide
+
+1. **Open Extension**
+   - Click Veris icon in Chrome toolbar
+   - Popup opens with "Capture Area" button
+
+2. **Activate Snipping Tool**
+   - Click "Capture Area"
+   - Popup closes, page shows dark overlay
+   - Cursor changes to crosshair
+
+3. **Select Area**
+   - Drag to select rectangular area
+   - Blue selection box shows selected region
+   - Press ESC to cancel
+
+4. **Capture**
+   - Release mouse to capture
+   - Screenshot taken automatically
+   - Popup reopens with preview
+
+5. **Submit for Verification**
+   - Review captured screenshot
+   - Click "Verify Claim"
+   - Success message appears
+
+6. **View Results**
+   - Open [veris-web-app.vercel.app](https://veris-web-app.vercel.app)
+   - Check feed in 2-3 minutes
+   - See verdict, confidence, and sources
 
 ## Tech Stack
 

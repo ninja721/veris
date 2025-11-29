@@ -2,7 +2,7 @@
 
 > **Truth Matters.** Built in 16 hours at MumbaiHacks, Veris is a social media platform where powerful entities cannot create monopolies and fake news cannot thrive.
 
-## � Visi on
+## 🎯 Vision
 
 According to Reuters, over 50% of surveyed adults use social media as a source of news. While decentralized news is powerful, misinformation spreads through seemingly genuine creators. Veris aims to build a platform where:
 
@@ -48,9 +48,9 @@ State-of-the-art fact-checking agent implementing ClaimCheck methodology with Go
 [📖 Read More](./services/agent_service/README.md)
 
 ### 2. Web Crawler (TypeScript)
-Automated RSS crawler that continuously submits verification claims from various news sources, keeping the platform updated with real-time fact-checks.
+Automated multi-source crawler that collects claims from RSS feeds (BBC, Times of India, The Guardian) and Reddit (r/worldnews, r/news, r/india). Runs every 5 minutes, extracting full article content and submitting to ADK agent for verification.
 
-**Tech Stack**: TypeScript, Node.js, PostgreSQL
+**Tech Stack**: TypeScript, Node.js, RSS Parser, Cheerio, Axios
 
 [📖 Read More](./services/crawler_service/README.md)
 
@@ -62,9 +62,16 @@ Modern web application where users can submit claims and view verified content. 
 [📖 Read More](./services/web-app/README.md)
 
 ### 4. Chrome Extension
-Browser extension with snipping tool for instant fact-checking from any website. Users can verify claims without leaving their current page.
+Browser extension with snipping tool for instant fact-checking from any website. Drag to select any area, capture screenshot, and submit for verification. Results appear in web app feed within 2-3 minutes.
 
-**Tech Stack**: React, TypeScript, Vite, Tailwind CSS
+**Tech Stack**: React, TypeScript, Vite, Tailwind CSS, Chrome Extension API
+
+**How to Use**:
+1. Click extension icon
+2. Click "Capture Area"
+3. Drag to select area on page
+4. Click "Verify Claim"
+5. Check web app feed in 2-3 minutes
 
 [📖 Read More](./services/veris_extension/README.md)
 
@@ -94,36 +101,53 @@ pnpm install
 # Copy example env files
 cp services/agent_service/.env.example services/agent_service/.env
 cp services/web-app/.env.local.example services/web-app/.env.local
+cp services/crawler_service/.env.example services/crawler_service/.env
 cp services/veris_extension/env.example services/veris_extension/.env
 
-# Edit with your credentials
+# Edit with your credentials (API keys, database URL)
 ```
 
 4. **Run services**
+
+**Web App** (Next.js)
 ```bash
-# Web App
 cd services/web-app
+pnpm install
 pnpm dev
+# Open http://localhost:3000
+```
 
-# Agent Service
+**ADK Agent** (Python)
+```bash
 cd services/agent_service
+pip install -r requirements.txt
 python agent.py
+# Runs on http://localhost:8080
+```
 
-# Crawler Service
+**Crawler Service** (TypeScript)
+```bash
 cd services/crawler_service
+pnpm install
 pnpm dev
+# Crawls every 5 minutes
+```
 
-# Extension
+**Chrome Extension**
+```bash
 cd services/veris_extension
-pnpm dev
+pnpm install
+pnpm build
+# Load dist/ folder in Chrome as unpacked extension
+# chrome://extensions/ → Enable Developer Mode → Load unpacked
 ```
 
 ## 🔄 How It Works
 
 1. **Multi-Source Input**
-   - Automated crawler submits claims from news sources
-   - Users submit claims via web app or Chrome extension
-   - Content can be text, images, or videos
+   - **Automated Crawler**: Runs every 5 minutes, collecting claims from RSS feeds (BBC, Times of India, The Guardian) and Reddit (r/worldnews, r/news, r/india)
+   - **User Submissions**: Via web app or Chrome extension
+   - **Content Types**: Text, images, and videos
 
 2. **ClaimCheck AI Processing**
    - Google ADK agent receives submission
@@ -137,9 +161,11 @@ pnpm dev
    - Provides confidence score (0-100%)
    - Cites all sources used
 
-4. **Real-Time Feed**
-   - Results appear in platform feed within 2-3 minutes
-   - Users can view full evidence and sources
+4. **Database & Feed Updates**
+   - Verified claims stored in PostgreSQL database
+   - **Feed automatically updates** with latest verified claims
+   - Both crawler-generated and user-submitted claims appear in feed
+   - Results visible within 2-3 minutes
    - Infinite scroll for seamless browsing
 
 ## 🛠️ Technology Stack

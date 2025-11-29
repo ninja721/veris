@@ -31,6 +31,7 @@ Modern web application for submitting and viewing AI-verified claims.
 
 1. **Install dependencies**
 ```bash
+cd services/web-app
 pnpm install
 ```
 
@@ -41,12 +42,41 @@ cp .env.local.example .env.local
 
 Edit `.env.local`:
 ```env
-# Database
-DATABASE_URL=postgresql://...
+# Database (Neon PostgreSQL)
+DATABASE_URL=postgresql://user:password@host/database?sslmode=require
 
 # ADK Agent
 NEXT_PUBLIC_ADK_AGENT_URL=https://veris-ai-773695696004.us-central1.run.app
 ```
+
+3. **Run development server**
+```bash
+pnpm dev
+# Open http://localhost:3000
+```
+
+4. **Production build**
+```bash
+pnpm build
+pnpm start
+```
+
+## Usage
+
+### Submit a Claim
+
+1. Go to [Submit page](https://veris-web-app.vercel.app/submit)
+2. Choose mode: Text, Image, or Video
+3. Enter/upload content
+4. Click "Verify"
+5. Wait 2-3 minutes for results
+
+### View Feed
+
+1. Go to [Home page](https://veris-web-app.vercel.app)
+2. Scroll through verified claims
+3. See verdicts, confidence scores, and sources
+4. Feed auto-loads more as you scroll (infinite scroll)
 
 3. **Run development server**
 ```bash
