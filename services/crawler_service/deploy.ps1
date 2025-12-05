@@ -34,7 +34,7 @@ gcloud run deploy $SERVICE_NAME `
   --platform managed `
   --region $REGION `
   --allow-unauthenticated `
-  --set-env-vars "PORT=3000,ADK_AGENT_URL=$env:ADK_AGENT_URL,RSS_FEEDS=$env:RSS_FEEDS,REDDIT_SUBREDDITS=$env:REDDIT_SUBREDDITS" `
+  --set-env-vars "ADK_AGENT_URL=$env:ADK_AGENT_URL,RSS_FEEDS=$env:RSS_FEEDS,REDDIT_SUBREDDITS=$env:REDDIT_SUBREDDITS" `
   --memory 512Mi `
   --cpu 1 `
   --timeout 300 `

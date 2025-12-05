@@ -14,8 +14,11 @@ RUN npm install
 COPY src ./src
 COPY public ./public
 
-# Build
-RUN npm run build
+# Build TypeScript
+RUN npm run build || npx tsc
+
+# Copy public folder to dist
+RUN cp -r public dist/public
 
 # Production stage
 FROM node:18-alpine
@@ -31,8 +34,11 @@ RUN npm install --production
 # Copy built files from builder
 COPY --from=builder /app/dist ./dist
 
-# Expose port
-EXPOSE 3000
+# Expose port (Cloud Run uses PORT env var, defaults to 8080)
+EXPOSE 8080
+
+# Set default PORT for Cloud Run
+ENV PORT=8080
 
 # Start server
-CMD ["npm", "start"]
+CMD ["node", "dist/server.js"]

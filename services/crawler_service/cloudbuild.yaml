@@ -22,7 +22,7 @@ steps:
       - 'managed'
       - '--allow-unauthenticated'
       - '--set-env-vars'
-      - 'PORT=3000,ADK_AGENT_URL=${_ADK_AGENT_URL},RSS_FEEDS=${_RSS_FEEDS},REDDIT_SUBREDDITS=${_REDDIT_SUBREDDITS}'
+      - 'ADK_AGENT_URL=${_ADK_AGENT_URL},RSS_FEEDS=${_RSS_FEEDS},REDDIT_SUBREDDITS=${_REDDIT_SUBREDDITS}'
 
 images:
   - 'gcr.io/$PROJECT_ID/veris-crawler:$SHORT_SHA'
