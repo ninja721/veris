@@ -7,7 +7,7 @@ set -e
 echo "🚀 Deploying Veris Crawler Service to Google Cloud Run..."
 
 # Configuration
-PROJECT_ID="your-project-id"
+PROJECT_ID="veris-478615"
 REGION="us-central1"
 SERVICE_NAME="veris-crawler"
 IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
