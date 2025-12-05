@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Newspaper as NewspaperIcon } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { ChevronLeft, ChevronRight, Newspaper as NewspaperIcon, Share2, Printer, Search } from 'lucide-react'
 
 interface Claim {
   id: string
@@ -24,202 +24,232 @@ interface NewspaperProps {
 export default function Newspaper({ claims }: NewspaperProps) {
   const [currentPage, setCurrentPage] = useState(0)
   const [isFlipping, setIsFlipping] = useState(false)
-  const [flipDirection, setFlipDirection] = useState<'left' | 'right'>('right')
-  
-  const claimsPerPage = 6
+  const [flipDirection, setFlipDirection] = useState<'next' | 'prev' | null>(null)
+  const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null)
+
+  const claimsPerPage = 5 // 1 Lead + 4 others
   const totalPages = Math.ceil(claims.length / claimsPerPage)
-  
+
   const getCurrentPageClaims = () => {
     const start = currentPage * claimsPerPage
     return claims.slice(start, start + claimsPerPage)
   }
 
   const handleNextPage = () => {
-    if (currentPage < totalPages - 1) {
-      setFlipDirection('right')
+    if (currentPage < totalPages - 1 && !isFlipping) {
+      setFlipDirection('next')
       setIsFlipping(true)
       setTimeout(() => {
         setCurrentPage(prev => prev + 1)
         setIsFlipping(false)
-      }, 600)
+        setFlipDirection(null)
+        setSelectedClaimId(null) // Reset selection on page flip
+      }, 800)
     }
   }
 
   const handlePrevPage = () => {
-    if (currentPage > 0) {
-      setFlipDirection('left')
+    if (currentPage > 0 && !isFlipping) {
+      setFlipDirection('prev')
       setIsFlipping(true)
       setTimeout(() => {
         setCurrentPage(prev => prev - 1)
         setIsFlipping(false)
-      }, 600)
+        setFlipDirection(null)
+        setSelectedClaimId(null) // Reset selection on page flip
+      }, 800)
     }
   }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'verified':
-        return { text: '✓ VERIFIED', color: 'text-green-800' }
+        return <span className="badge-verified">Verified Truth</span>
       case 'false':
-        return { text: '✗ FALSE', color: 'text-red-800' }
+        return <span className="badge-false">Fabrication</span>
       case 'disputed':
-        return { text: '⚠ DISPUTED', color: 'text-orange-800' }
+        return <span className="badge-disputed">Contested</span>
       default:
-        return { text: '? UNVERIFIED', color: 'text-gray-800' }
+        return <span className="badge-unverifiable">Unverified</span>
     }
   }
 
   const pageClaims = getCurrentPageClaims()
-  const today = new Date().toLocaleDateString('en-US', { 
-    weekday: 'long', 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
+
+  // Determine the lead claim: either the selected one or the first one on the page
+  const leadClaim = selectedClaimId
+    ? pageClaims.find(c => c.id === selectedClaimId) || pageClaims[0]
+    : pageClaims[0]
+
+  // Filter out the lead claim from the sidebar list so it doesn't appear twice
+  // OR keep it to maintain the list structure? Let's keep it but highlight it or just show all sidebar items
+  // Actually, standard newspaper web behavior is clicking a headline opens it. 
+  // Here we want to "read it" in the main view.
+  // Let's just show all claims in the sidebar, but maybe highlight the active one.
+  const sidebarClaims = pageClaims.filter(c => c.id !== leadClaim?.id)
+
+  const today = new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
   })
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 py-8 px-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-paper-800 py-8 px-4 flex items-center justify-center overflow-hidden">
+      <div className="max-w-6xl w-full perspective-2000">
         {/* Newspaper Container */}
-        <div className="relative">
-          {/* Page */}
-          <div 
-            className={`
-              bg-[#f5f1e8] shadow-2xl rounded-sm overflow-hidden
-              transition-all duration-600 ease-in-out
-              ${isFlipping ? (flipDirection === 'right' ? 'animate-flip-right' : 'animate-flip-left') : ''}
-            `}
-            style={{
-              backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' /%3E%3CfeColorMatrix type=\'saturate\' values=\'0\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noise)\' opacity=\'0.05\'/%3E%3C/svg%3E")',
-            }}
-          >
-            {/* Masthead */}
-            <div className="border-b-4 border-black py-6 px-8">
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-xs font-serif text-gray-700">Est. 2024</div>
-                <div className="text-xs font-serif text-gray-700">{today}</div>
-              </div>
-              <h1 className="text-7xl font-serif font-black text-center text-gray-900 tracking-tight" 
-                  style={{ fontFamily: 'Georgia, serif', textShadow: '2px 2px 0px rgba(0,0,0,0.1)' }}>
-                THE VERIS
-              </h1>
-              <div className="text-center mt-2">
-                <p className="text-sm font-serif italic text-gray-700">"Truth Matters - All the Facts Fit to Verify"</p>
-              </div>
-              <div className="flex items-center justify-between mt-3 text-xs font-serif text-gray-600">
-                <span>Page {currentPage + 1} of {totalPages}</span>
-                <span className="flex items-center gap-1">
-                  <NewspaperIcon size={14} />
-                  AI-Verified News
-                </span>
-                <span>{claims.length} Claims Verified</span>
-              </div>
+        <div className={`
+          relative bg-paper-100 shadow-2xl transition-transform duration-800 transform-style-3d
+          ${isFlipping && flipDirection === 'next' ? 'animate-flip-out' : ''}
+          ${isFlipping && flipDirection === 'prev' ? 'animate-flip-in' : ''}
+        `}>
+
+          {/* Header / Masthead */}
+          <header className="border-b-4 border-double border-ink-900 p-8 text-center relative">
+            <div className="absolute top-4 left-4 text-xs font-mono text-ink-600 border border-ink-600 p-1">
+              VOL. {new Date().getFullYear()}.{new Date().getMonth() + 1}
+            </div>
+            <div className="absolute top-4 right-4 text-xs font-mono text-ink-600 border border-ink-600 p-1">
+              PRICE: FREE TRUTH
             </div>
 
-            {/* Content Grid */}
-            <div className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {pageClaims.map((claim, index) => {
-                  const badge = getStatusBadge(claim.verification_status)
-                  const isLead = index === 0
-                  
-                  return (
-                    <article 
-                      key={claim.id}
-                      className={`
-                        ${isLead ? 'md:col-span-2' : ''}
-                        border-b-2 border-gray-400 pb-4
-                      `}
-                    >
-                      {/* Category & Status */}
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-bold uppercase tracking-wider text-gray-700 font-serif">
-                          {claim.category}
-                        </span>
-                        <span className={`text-xs font-bold ${badge.color} font-mono`}>
-                          {badge.text}
-                        </span>
-                      </div>
+            <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-2 glitch-wrapper">
+              <span className="glitch-text" data-text="THE VERIS CHRONICLE">THE VERIS CHRONICLE</span>
+            </h1>
 
-                      {/* Headline */}
-                      <h2 className={`
-                        font-serif font-bold text-gray-900 mb-2 leading-tight
-                        ${isLead ? 'text-3xl md:text-4xl' : 'text-xl md:text-2xl'}
-                      `}>
-                        {claim.claim}
-                      </h2>
+            <div className="flex items-center justify-center gap-4 border-t border-b border-ink-900 py-2 mt-4">
+              <span className="font-mono text-sm">{today}</span>
+              <span className="text-ink-400">•</span>
+              <span className="font-mono text-sm uppercase tracking-widest">Verification Engine</span>
+              <span className="text-ink-400">•</span>
+              <span className="font-mono text-sm">WORLDWIDE EDITION</span>
+            </div>
+          </header>
 
-                      {/* Byline */}
-                      <div className="text-xs text-gray-600 mb-3 font-serif italic">
-                        By {claim.source} • {new Date(claim.created_at).toLocaleDateString()} • Confidence: {claim.confidence}%
-                      </div>
+          {/* Main Content */}
+          <div className="p-8 grid grid-cols-12 gap-8 min-h-[800px]">
+            {/* Left Column (Lead Story) */}
+            <div className="col-span-12 lg:col-span-8 border-r border-ink-300 pr-8 flex flex-col">
+              {leadClaim ? (
+                <article className="mb-8 flex-1 animate-in fade-in duration-500" key={leadClaim.id}>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-xs uppercase tracking-widest text-ink-500 border-b border-ink-500 pb-1">
+                      {leadClaim.category}
+                    </span>
+                    {getStatusBadge(leadClaim.verification_status)}
+                  </div>
 
-                      {/* Evidence */}
-                      <p className={`
-                        font-serif text-gray-800 leading-relaxed
-                        ${isLead ? 'text-base' : 'text-sm'}
-                      `}>
-                        {claim.evidence.length > 300 
-                          ? claim.evidence.substring(0, 300) + '...' 
-                          : claim.evidence}
-                      </p>
+                  <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-4 font-heading">
+                    {leadClaim.claim}
+                  </h2>
 
-                      {/* Sources */}
-                      {claim.sources && claim.sources.length > 0 && (
-                        <div className="mt-3 pt-3 border-t border-gray-300">
-                          <p className="text-xs font-bold text-gray-700 mb-1 font-serif">SOURCES:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {claim.sources.slice(0, 3).map((source, i) => (
-                              <span 
-                                key={i}
-                                className="text-xs text-blue-800 underline font-serif"
-                              >
-                                {new URL(source).hostname}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </article>
-                  )
-                })}
+                  <div className="flex items-center gap-4 text-sm font-mono text-ink-600 mb-6 italic">
+                    <span>By {leadClaim.source}</span>
+                    <span>•</span>
+                    <span>Confidence: {leadClaim.confidence}%</span>
+                  </div>
+
+                  <div className="prose prose-lg font-serif text-ink-800 first-letter:text-5xl first-letter:font-bold first-letter:float-left first-letter:mr-3 first-letter:mt-[-10px]">
+                    {leadClaim.evidence}
+                  </div>
+
+                  {leadClaim.sources && leadClaim.sources.length > 0 && (
+                    <div className="mt-6 p-4 bg-paper-200 border border-paper-400 rounded-sm">
+                      <h4 className="font-bold text-sm uppercase mb-2 font-mono">Sources Verified:</h4>
+                      <ul className="list-disc pl-4 text-sm font-mono text-ink-700">
+                        {leadClaim.sources.slice(0, 3).map((source, i) => (
+                          <li key={i} className="truncate">
+                            <a href={source} target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-ink-900">
+                              {new URL(source).hostname}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </article>
+              ) : (
+                <div className="flex items-center justify-center h-full text-ink-400 font-serif italic">
+                  No stories to display on this page.
+                </div>
+              )}
+            </div>
+
+            {/* Right Column (Sidebar Stories) */}
+            <div className="col-span-12 lg:col-span-4 flex flex-col gap-6">
+              {/* Weather/Status Widget */}
+              <div className="border-b-2 border-ink-900 pb-4 mb-2">
+                <h3 className="font-bold text-xl mb-2 font-heading uppercase text-center">System Status</h3>
+                <div className="grid grid-cols-2 gap-2 text-center font-mono text-xs">
+                  <div className="bg-ink-900 text-paper-100 p-2">
+                    <div className="text-tech-cyan font-bold">ONLINE</div>
+                    <div>CRAWLER</div>
+                  </div>
+                  <div className="bg-paper-300 p-2 border border-ink-900">
+                    <div className="font-bold">{claims.length}</div>
+                    <div>CLAIMS</div>
+                  </div>
+                </div>
               </div>
 
-              {/* Footer */}
-              <div className="mt-8 pt-4 border-t-2 border-gray-400 text-center">
-                <p className="text-xs font-serif text-gray-600 italic">
-                  All claims verified using state-of-the-art AI fact-checking technology
-                </p>
-              </div>
+              {sidebarClaims.map((claim) => (
+                <article
+                  key={claim.id}
+                  className="border-b border-ink-300 pb-4 last:border-0 group cursor-pointer"
+                  onClick={() => setSelectedClaimId(claim.id)}
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-xs font-mono text-ink-500 uppercase">{claim.category}</span>
+                    {getStatusBadge(claim.verification_status)}
+                  </div>
+                  <h3 className="text-xl font-bold leading-snug mb-2 font-heading group-hover:text-ink-600 transition-colors group-hover:underline decoration-ink-400 underline-offset-4">
+                    {claim.claim}
+                  </h3>
+                  <p className="text-sm text-ink-700 line-clamp-3 font-serif">
+                    {claim.evidence}
+                  </p>
+                </article>
+              ))}
+
+              {/* Fill empty space if fewer than 5 claims */}
+              {pageClaims.length < 5 && Array.from({ length: 5 - pageClaims.length }).map((_, i) => (
+                <div key={`placeholder-${i}`} className="border-b border-ink-300 pb-4 last:border-0 opacity-30">
+                  <div className="h-4 bg-ink-200 w-1/3 mb-2"></div>
+                  <div className="h-6 bg-ink-200 w-3/4 mb-2"></div>
+                  <div className="h-4 bg-ink-200 w-full mb-1"></div>
+                  <div className="h-4 bg-ink-200 w-5/6"></div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Navigation Buttons */}
-          <div className="flex items-center justify-between mt-8">
+          {/* Footer / Pagination */}
+          <footer className="bg-paper-200 border-t-2 border-ink-900 p-4 flex items-center justify-between">
             <button
               onClick={handlePrevPage}
               disabled={currentPage === 0 || isFlipping}
-              className="flex items-center gap-2 px-6 py-3 bg-amber-900 text-amber-50 rounded-lg font-serif font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-amber-800 transition-all shadow-lg"
+              className="btn-secondary flex items-center gap-2"
             >
-              <ChevronLeft size={20} />
-              Previous Page
+              <ChevronLeft size={16} /> Previous
             </button>
 
-            <div className="text-center">
-              <p className="text-sm font-serif text-gray-700">
-                Page {currentPage + 1} of {totalPages}
-              </p>
+            <div className="font-mono text-sm">
+              PAGE {currentPage + 1} OF {totalPages}
             </div>
 
             <button
               onClick={handleNextPage}
               disabled={currentPage >= totalPages - 1 || isFlipping}
-              className="flex items-center gap-2 px-6 py-3 bg-amber-900 text-amber-50 rounded-lg font-serif font-bold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-amber-800 transition-all shadow-lg"
+              className="btn-primary flex items-center gap-2"
             >
-              Next Page
-              <ChevronRight size={20} />
+              Next <ChevronRight size={16} />
             </button>
-          </div>
+          </footer>
+
+          {/* Decorative Elements */}
+          <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-paper-400 to-transparent opacity-20 pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-paper-400 to-transparent opacity-20 pointer-events-none"></div>
         </div>
       </div>
     </div>
