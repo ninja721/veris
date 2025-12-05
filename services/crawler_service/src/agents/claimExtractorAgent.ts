@@ -25,7 +25,7 @@ export class ADKAgentClient {
       {},
       {
         headers: { 'Content-Type': 'application/json' },
-        timeout: 30000,
+        timeout: 120000, // 2 minutes for session creation
       }
     );
     return response.data.id;
@@ -69,7 +69,7 @@ export class ADKAgentClient {
     const message = this.formatMessage(rawContent);
 
     try {
-      // Send request and wait for initial acceptance (not full processing)
+      // Send request - agent processes in background
       const response = await axios.post(
         `${this.agentUrl}/run_sse`,
         {
@@ -86,38 +86,36 @@ export class ADKAgentClient {
             'Content-Type': 'application/json',
             'Accept': 'text/event-stream',
           },
-          timeout: 15000, // 15 seconds to get initial response
-          validateStatus: (status) => status < 500, // Accept 4xx as valid responses
+          timeout: 120000, // 2 minutes - agent may take time for complex claims
+          validateStatus: (status) => status < 500,
         }
       );
 
       // Check if request was accepted
       if (response.status === 200 || response.status === 202) {
-        logger.info('✅ ADK agent accepted request', { 
+        logger.info('✅ Agent processing content', { 
           url: rawContent.url,
           status: response.status,
         });
-        // Session used successfully, create new one for next request
         this.sessionId = null;
         return true;
       }
 
-      // Handle session errors - reset and retry
+      // Handle session errors
       if (response.status === 404 || response.status === 401) {
-        logger.warn('⚠️ Session invalid, creating new session', {
+        logger.warn('⚠️ Session invalid, retrying', {
           url: rawContent.url,
-          status: response.status,
         });
         this.sessionId = null;
-        throw new Error('Session invalid, will retry with new session');
+        throw new Error('Session invalid');
       }
 
-      // Handle quota/rate limit errors
+      // Handle rate limits
       if (response.status === 429) {
-        throw new Error('Rate limit exceeded (429)');
+        throw new Error('Rate limit exceeded');
       }
 
-      logger.warn('⚠️ ADK agent rejected request', {
+      logger.warn('⚠️ Agent rejected request', {
         url: rawContent.url,
         status: response.status,
       });
@@ -125,30 +123,26 @@ export class ADKAgentClient {
 
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        // Session might be invalid, reset it
         if (error.response?.status === 404 || error.response?.status === 401) {
           this.sessionId = null;
-          throw new Error('Session invalid, will retry with new session');
+          throw new Error('Session invalid');
         }
 
-        // Quota/rate limit error
         if (error.response?.status === 429 || error.message.includes('quota')) {
-          throw new Error('Quota limit hit, will retry with backoff');
+          throw new Error('Quota limit hit');
         }
 
-        // Timeout is OK - agent is processing in background
+        // Timeout after 2 minutes means agent is still processing
         if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-          logger.info('⏱️ Request timeout (agent processing in background)', {
+          logger.info('⏱️ Processing in background (may take time for complex claims)', {
             url: rawContent.url,
           });
-          // Session likely consumed, create new one for next request
           this.sessionId = null;
-          return true;
+          return true; // Consider it successful - agent is working
         }
         
-        logger.error('❌ ADK agent error', {
+        logger.error('❌ Agent error', {
           url: rawContent.url,
-          status: error.response?.status,
           error: error.message,
         });
       }
@@ -182,27 +176,24 @@ Please extract and verify all claims from this article.`;
   }
 
   /**
-   * Process multiple articles with exponential backoff on quota limits
+   * Process multiple articles with retry logic
    */
   async processArticleBatch(rawContents: RawContentItem[]): Promise<number> {
     let successCount = 0;
-    let retryDelay = 5000; // Start with 5 seconds
-    const maxRetryDelay = 300000; // Max 5 minutes
+    let retryDelay = 5000;
+    const maxRetryDelay = 60000; // Max 1 minute between retries
 
     for (let i = 0; i < rawContents.length; i++) {
       const content = rawContents[i];
-      const remaining = rawContents.length - i;
       
-      logger.info(`Processing article ${i + 1}/${rawContents.length}`, {
+      logger.info(`Processing ${i + 1}/${rawContents.length}`, {
         source: content.source,
-        remaining,
       });
 
       let success = false;
       let attempts = 0;
-      const maxAttempts = 5;
+      const maxAttempts = 3;
 
-      // Retry with exponential backoff
       while (!success && attempts < maxAttempts) {
         attempts++;
         
@@ -211,31 +202,23 @@ Please extract and verify all claims from this article.`;
           
           if (success) {
             successCount++;
-            retryDelay = 5000; // Reset delay on success
-            logger.info(`✅ Article processed (${successCount}/${rawContents.length})`);
-            
-            // Wait 3 seconds before next article
-            await new Promise(resolve => setTimeout(resolve, 3000));
+            retryDelay = 5000;
+            logger.info(`✅ Sent to agent (${successCount}/${rawContents.length})`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
             break;
           }
         } catch (error: any) {
           const isQuotaError = error?.message?.includes('quota') || 
-                              error?.message?.includes('429') ||
-                              error?.message?.includes('rate limit');
+                              error?.message?.includes('429');
           
           if (isQuotaError) {
-            logger.warn(`⚠️ Quota limit hit, waiting ${retryDelay / 1000}s before retry`, {
+            logger.warn(`⚠️ Rate limit, waiting ${retryDelay / 1000}s`, {
               attempt: attempts,
-              maxAttempts,
             });
-            
             await new Promise(resolve => setTimeout(resolve, retryDelay));
-            
-            // Exponential backoff: double the delay
             retryDelay = Math.min(retryDelay * 2, maxRetryDelay);
           } else {
-            // Other error, skip this article
-            logger.error(`❌ Failed to process article, skipping`, {
+            logger.error(`❌ Failed, skipping`, {
               url: content.url,
               error: error?.message,
             });
@@ -243,18 +226,11 @@ Please extract and verify all claims from this article.`;
           }
         }
       }
-
-      if (!success) {
-        logger.warn(`⏭️ Skipping article after ${attempts} attempts`, {
-          url: content.url,
-        });
-      }
     }
 
-    logger.info('Batch processing complete', { 
+    logger.info('Batch complete', { 
       total: rawContents.length,
       successful: successCount,
-      failed: rawContents.length - successCount,
     });
 
     return successCount;

@@ -1,22 +1,24 @@
 {
   "name": "@veris/crawler-service",
-  "version": "1.0.0",
-  "main": "./dist/app.js",
+  "version": "2.0.0",
+  "main": "./dist/server.js",
   "scripts": {
-    "dev": "tsx watch src/app.ts",
-    "build": "tsc",
-    "start": "node dist/app.js",
-    "clean": "rm -rf dist",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc && xcopy /E /I /Y public dist\\public",
+    "start": "node dist/server.js",
+    "clean": "rmdir /s /q dist",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "axios": "^1.6.0",
     "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.3.0",
+    "express": "^4.18.2",
     "rss-parser": "^3.13.0",
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "@types/node": "^20.10.0",
     "tsx": "^4.7.0",
     "typescript": "^5.3.0"
