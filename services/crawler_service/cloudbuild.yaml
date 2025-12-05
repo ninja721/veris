@@ -1,0 +1,31 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/veris-crawler:$SHORT_SHA', '.']
+  
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/veris-crawler:$SHORT_SHA']
+  
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'veris-crawler'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/veris-crawler:$SHORT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars'
+      - 'PORT=3000,ADK_AGENT_URL=${_ADK_AGENT_URL},RSS_FEEDS=${_RSS_FEEDS},REDDIT_SUBREDDITS=${_REDDIT_SUBREDDITS}'
+
+images:
+  - 'gcr.io/$PROJECT_ID/veris-crawler:$SHORT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

@@ -1,12 +1,12 @@
 # Veris Crawler Service v2.0
 
-Interactive web-based crawler with manual content selection.
+Interactive web-based crawler with manual content selection. Fully independent service - no monorepo dependencies.
 
 ## Quick Start
 
 ```bash
-pnpm install
-pnpm dev
+npm install
+npm run dev
 # Open http://localhost:3000
 ```
 
@@ -35,3 +35,67 @@ REDDIT_SUBREDDITS=worldnews,news,india
 - **Text**: Primary content type sent to agent for claim extraction
 
 Note: Agent service processes text content only. Images/videos are metadata.
+
+## Deployment to Google Cloud Run
+
+### Prerequisites
+- Google Cloud SDK installed
+- Docker installed
+- Project ID configured
+
+### Option 1: Using Deployment Script
+
+**Windows:**
+```powershell
+# Edit deploy.ps1 and set your PROJECT_ID
+.\deploy.ps1
+```
+
+**Linux/Mac:**
+```bash
+# Edit deploy.sh and set your PROJECT_ID
+chmod +x deploy.sh
+./deploy.sh
+```
+
+### Option 2: Manual Deployment
+
+```bash
+# Set your project
+gcloud config set project YOUR_PROJECT_ID
+
+# Build and push
+docker build -t gcr.io/YOUR_PROJECT_ID/veris-crawler .
+docker push gcr.io/YOUR_PROJECT_ID/veris-crawler
+
+# Deploy
+gcloud run deploy veris-crawler \
+  --image gcr.io/YOUR_PROJECT_ID/veris-crawler \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars "PORT=3000,ADK_AGENT_URL=YOUR_AGENT_URL,RSS_FEEDS=YOUR_FEEDS,REDDIT_SUBREDDITS=YOUR_SUBREDDITS"
+```
+
+### Option 3: Cloud Build (Automated)
+
+```bash
+gcloud builds submit --config cloudbuild.yaml \
+  --substitutions _ADK_AGENT_URL="YOUR_AGENT_URL",_RSS_FEEDS="YOUR_FEEDS",_REDDIT_SUBREDDITS="YOUR_SUBREDDITS"
+```
+
+## Build Commands
+
+```bash
+# Development
+npm run dev
+
+# Build (Linux/Mac)
+npm run build
+
+# Build (Windows)
+npm run build:windows
+
+# Production
+npm start
+```
