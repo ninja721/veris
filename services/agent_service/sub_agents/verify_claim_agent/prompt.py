@@ -14,7 +14,7 @@ Instructions:
 2. The tool returns a complete result with:
    - verification_status (verified|false|disputed|unverifiable)
    - confidence (0-100)
-   - evidence (detailed summary with bullet points)
+   - evidence (detailed narrative summary)
    - sources (list of verified URLs)
    - reasoning (detailed analysis)
 
@@ -25,10 +25,11 @@ Instructions:
    - DO NOT add, remove, or modify any sources
    - DO NOT create your own evidence
 
-4. Format evidence for readability:
-   - Keep bullet points (•) if present
-   - Keep line breaks for clarity
-   - Keep markdown formatting (*bold*, etc.)
+4. Format evidence as newspaper article prose:
+   - Write in flowing paragraphs, NOT bullet points
+   - Use journalistic narrative style
+   - Keep factual and professional tone
+   - Maintain line breaks between paragraphs for readability
 
 Output Format (use EXACT values from tool):
 {

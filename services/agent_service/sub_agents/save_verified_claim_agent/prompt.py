@@ -5,7 +5,7 @@ Task: Map verification output to database schema and execute save.
 
 CRITICAL: Use EXACT values from verification result:
 - sources: Use the EXACT sources array from verification (DO NOT modify URLs)
-- evidence: Use the EXACT evidence text (preserve formatting, bullet points, markdown)
+- evidence: Use the EXACT evidence text (preserve paragraph formatting)
 - verification_status: Use the EXACT status from verification
 - confidence: Use the EXACT confidence number
 
