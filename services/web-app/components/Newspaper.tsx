@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { ChevronLeft, ChevronRight, Newspaper as NewspaperIcon, Share2, Printer, Search } from 'lucide-react'
+import { useState } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface Claim {
   id: string
@@ -106,31 +106,31 @@ export default function Newspaper({ claims }: NewspaperProps) {
         `}>
 
           {/* Header / Masthead */}
-          <header className="border-b-4 border-double border-ink-900 p-8 text-center relative">
-            <div className="absolute top-4 left-4 text-xs font-mono text-ink-600 border border-ink-600 p-1">
+          <header className="border-b-4 border-double border-ink-900 p-4 md:p-8 text-center relative">
+            <div className="absolute top-2 left-2 md:top-4 md:left-4 text-[10px] md:text-xs font-mono text-ink-600 border border-ink-600 p-1">
               VOL. {new Date().getFullYear()}.{new Date().getMonth() + 1}
             </div>
-            <div className="absolute top-4 right-4 text-xs font-mono text-ink-600 border border-ink-600 p-1">
-              PRICE: FREE TRUTH
+            <div className="absolute top-2 right-2 md:top-4 md:right-4 text-[10px] md:text-xs font-mono text-ink-600 border border-ink-600 p-1">
+              FREE
             </div>
 
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-2 glitch-wrapper">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black tracking-tighter mb-2 glitch-wrapper">
               <span className="glitch-text" data-text="THE VERIS CHRONICLE">THE VERIS CHRONICLE</span>
             </h1>
 
-            <div className="flex items-center justify-center gap-4 border-t border-b border-ink-900 py-2 mt-4">
-              <span className="font-mono text-sm">{today}</span>
-              <span className="text-ink-400">•</span>
-              <span className="font-mono text-sm uppercase tracking-widest">Verification Engine</span>
-              <span className="text-ink-400">•</span>
-              <span className="font-mono text-sm">WORLDWIDE EDITION</span>
+            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 border-t border-b border-ink-900 py-2 mt-4 text-xs md:text-sm">
+              <span className="font-mono">{today}</span>
+              <span className="text-ink-400 hidden sm:inline">•</span>
+              <span className="font-mono uppercase tracking-widest">Verification Engine</span>
+              <span className="text-ink-400 hidden sm:inline">•</span>
+              <span className="font-mono">WORLDWIDE EDITION</span>
             </div>
           </header>
 
           {/* Main Content */}
-          <div className="p-8 grid grid-cols-12 gap-8 min-h-[800px]">
+          <div className="p-4 md:p-8 grid grid-cols-12 gap-4 md:gap-8 min-h-[600px] md:min-h-[800px]">
             {/* Left Column (Lead Story) */}
-            <div className="col-span-12 lg:col-span-8 border-r border-ink-300 pr-8 flex flex-col">
+            <div className="col-span-12 lg:col-span-8 lg:border-r border-ink-300 lg:pr-8 flex flex-col">
               {leadClaim ? (
                 <article className="mb-8 flex-1 animate-in fade-in duration-500" key={leadClaim.id}>
                   <div className="flex items-center justify-between mb-3">
@@ -140,7 +140,7 @@ export default function Newspaper({ claims }: NewspaperProps) {
                     {getStatusBadge(leadClaim.verification_status)}
                   </div>
 
-                  <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-4 font-heading">
+                  <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4 font-heading">
                     {leadClaim.claim}
                   </h2>
 
@@ -178,9 +178,9 @@ export default function Newspaper({ claims }: NewspaperProps) {
 
             {/* Right Column (Sidebar Stories) */}
             <div className="col-span-12 lg:col-span-4 flex flex-col gap-6">
-              {/* Weather/Status Widget */}
-              <div className="border-b-2 border-ink-900 pb-4 mb-2">
-                <h3 className="font-bold text-xl mb-2 font-heading uppercase text-center">System Status</h3>
+              {/* Status Widget */}
+              <div className="border-b-2 border-ink-900 pb-4 mb-2 hidden lg:block">
+                <h3 className="font-bold text-lg mb-2 font-heading uppercase text-center">Status</h3>
                 <div className="grid grid-cols-2 gap-2 text-center font-mono text-xs">
                   <div className="bg-ink-900 text-paper-100 p-2">
                     <div className="text-tech-cyan font-bold">ONLINE</div>
@@ -188,7 +188,7 @@ export default function Newspaper({ claims }: NewspaperProps) {
                   </div>
                   <div className="bg-paper-300 p-2 border border-ink-900">
                     <div className="font-bold">{claims.length}</div>
-                    <div>CLAIMS</div>
+                    <div>STORIES</div>
                   </div>
                 </div>
               </div>
@@ -203,7 +203,7 @@ export default function Newspaper({ claims }: NewspaperProps) {
                     <span className="text-xs font-mono text-ink-500 uppercase">{claim.category}</span>
                     {getStatusBadge(claim.verification_status)}
                   </div>
-                  <h3 className="text-xl font-bold leading-snug mb-2 font-heading group-hover:text-ink-600 transition-colors group-hover:underline decoration-ink-400 underline-offset-4">
+                  <h3 className="text-lg md:text-xl font-bold leading-snug mb-2 font-heading group-hover:text-ink-600 transition-colors group-hover:underline decoration-ink-400 underline-offset-4">
                     {claim.claim}
                   </h3>
                   <p className="text-sm text-ink-700 line-clamp-3 font-serif">
@@ -225,25 +225,25 @@ export default function Newspaper({ claims }: NewspaperProps) {
           </div>
 
           {/* Footer / Pagination */}
-          <footer className="bg-paper-200 border-t-2 border-ink-900 p-4 flex items-center justify-between">
+          <footer className="bg-paper-200 border-t-2 border-ink-900 p-3 md:p-4 flex items-center justify-between flex-wrap gap-2">
             <button
               onClick={handlePrevPage}
               disabled={currentPage === 0 || isFlipping}
-              className="btn-secondary flex items-center gap-2"
+              className="btn-secondary flex items-center gap-1 md:gap-2 text-sm md:text-base"
             >
-              <ChevronLeft size={16} /> Previous
+              <ChevronLeft size={16} /> <span className="hidden sm:inline">Previous</span><span className="sm:hidden">Prev</span>
             </button>
 
-            <div className="font-mono text-sm">
+            <div className="font-mono text-xs md:text-sm">
               PAGE {currentPage + 1} OF {totalPages}
             </div>
 
             <button
               onClick={handleNextPage}
               disabled={currentPage >= totalPages - 1 || isFlipping}
-              className="btn-primary flex items-center gap-2"
+              className="btn-primary flex items-center gap-1 md:gap-2 text-sm md:text-base"
             >
-              Next <ChevronRight size={16} />
+              <span className="hidden sm:inline">Next</span><span className="sm:hidden">Next</span> <ChevronRight size={16} />
             </button>
           </footer>
 
