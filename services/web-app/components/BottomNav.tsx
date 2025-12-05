@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Newspaper, PlusSquare } from 'lucide-react'
+import { Newspaper, PlusSquare, Mail } from 'lucide-react'
 
 export default function BottomNav() {
     const pathname = usePathname()
@@ -18,7 +18,7 @@ export default function BottomNav() {
                         }`}
                 >
                     <Newspaper size={24} />
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Front Page</span>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Front</span>
                 </Link>
 
                 <div className="w-px h-8 bg-ink-300"></div>
@@ -32,6 +32,19 @@ export default function BottomNav() {
                 >
                     <PlusSquare size={24} />
                     <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Submit</span>
+                </Link>
+
+                <div className="w-px h-8 bg-ink-300"></div>
+
+                <Link
+                    href="/premium"
+                    className={`flex flex-col items-center gap-1 p-2 transition-all ${pathname === '/premium'
+                            ? 'text-ink-900 scale-110'
+                            : 'text-ink-500 hover:text-ink-700'
+                        }`}
+                >
+                    <Mail size={24} />
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Premium</span>
                 </Link>
             </div>
         </nav>

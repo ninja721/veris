@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Newspaper, PlusSquare, ShieldCheck } from 'lucide-react'
+import { Newspaper, PlusSquare, Mail, Sparkles } from 'lucide-react'
 
 export default function Sidebar() {
     const pathname = usePathname()
@@ -11,8 +11,11 @@ export default function Sidebar() {
         <aside className="hidden md:flex flex-col w-[244px] border-r-2 border-ink-900 fixed h-screen bg-paper-100 z-50 shadow-xl">
             <div className="p-6 border-b border-ink-300">
                 <Link href="/veris" className="flex items-center gap-3 mb-2 group">
-                    <div className="w-10 h-10 bg-ink-900 rounded-sm flex items-center justify-center group-hover:bg-ink-700 transition-colors">
+                    <div className="w-10 h-10 bg-ink-900 rounded-sm flex items-center justify-center group-hover:bg-ink-700 transition-colors relative">
                         <span className="text-paper-100 font-heading font-bold text-2xl">V</span>
+                        <span className="absolute -top-1 -right-1 bg-amber-500 text-white text-[8px] font-bold px-1 rounded">
+                            β
+                        </span>
                     </div>
                     <div className="flex flex-col">
                         <span className="text-2xl font-heading font-black text-ink-900 tracking-tighter leading-none">VERIS</span>
@@ -48,6 +51,17 @@ export default function Sidebar() {
                         <PlusSquare size={20} />
                         <span className="font-serif font-bold">Submit Tip</span>
                     </Link>
+
+                    <Link
+                        href="/premium"
+                        className={`flex items-center gap-3 p-2 transition-all group ${pathname === '/premium'
+                                ? 'bg-ink-900 text-paper-100 shadow-md transform -rotate-1'
+                                : 'text-ink-800 hover:bg-paper-200 hover:pl-4'
+                            }`}
+                    >
+                        <Mail size={20} />
+                        <span className="font-serif font-bold">Premium</span>
+                    </Link>
                 </nav>
 
                 <div className="mt-12 p-4 bg-paper-200 border border-ink-300 relative">
@@ -61,10 +75,10 @@ export default function Sidebar() {
                 </div>
             </div>
 
-            <div className="p-4 border-t-2 border-ink-900 bg-paper-200">
-                <div className="flex items-center gap-2 text-ink-800">
-                    <ShieldCheck size={20} />
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider">Verified Truth</span>
+            <div className="p-4 border-t-2 border-ink-900 bg-amber-50">
+                <div className="flex items-center gap-2 text-amber-700">
+                    <Sparkles size={16} />
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider">BETA</span>
                 </div>
             </div>
         </aside>
