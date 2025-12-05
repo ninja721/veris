@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { Mail, Check, Sparkles, Newspaper } from 'lucide-react'
+import { Mail, Check, Sparkles, Newspaper, Ghost } from 'lucide-react'
+import { useHalloween } from '@/components/HalloweenContext'
 
 export default function PremiumPage() {
   const [showBetaModal, setShowBetaModal] = useState(false)
+  const { isHalloween } = useHalloween()
 
   const plans = [
     {
@@ -55,11 +57,19 @@ export default function PremiumPage() {
     <div className="min-h-screen bg-paper-100 py-12 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Beta Badge */}
-        <div className="flex justify-center mb-8">
+        <div className="flex flex-col items-center gap-4 justify-center mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-ink-900 text-paper-100 font-mono text-sm font-bold uppercase tracking-wider border-2 border-ink-900 shadow-md">
             <Sparkles size={16} />
             BETA VERSION
           </div>
+
+          {isHalloween && (
+            <div className="animate-pulse inline-flex items-center gap-2 px-6 py-2 bg-orange-600 text-white font-heading font-black text-xl uppercase tracking-widest border-4 border-orange-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform -rotate-1">
+              <Ghost size={24} />
+              HALLOWEEN SALE 20% OFF
+              <Ghost size={24} />
+            </div>
+          )}
         </div>
 
         {/* Header */}
@@ -79,9 +89,8 @@ export default function PremiumPage() {
             return (
               <div
                 key={index}
-                className={`bg-paper-200 border-2 md:border-4 border-ink-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-1 ${
-                  plan.featured ? 'sm:col-span-2 lg:col-span-1 lg:scale-105 bg-amber-50' : ''
-                }`}
+                className={`bg-paper-200 border-2 md:border-4 border-ink-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-1 ${plan.featured ? 'sm:col-span-2 lg:col-span-1 lg:scale-105 bg-amber-50' : ''
+                  }`}
               >
                 <div className="p-4 md:p-8">
                   {plan.featured && (
@@ -89,22 +98,38 @@ export default function PremiumPage() {
                       Most Popular
                     </div>
                   )}
-                  
+
                   <div className="border-b-2 border-ink-900 pb-3 md:pb-4 mb-3 md:mb-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Icon size={20} className="text-ink-900 md:w-6 md:h-6" />
                       <h3 className="text-xl md:text-2xl font-heading font-black text-ink-900 uppercase tracking-tight">
                         {plan.name}
                       </h3>
+                      {isHalloween && (
+                        <Ghost size={20} className="text-orange-500 animate-bounce" />
+                      )}
                     </div>
-                    <div className="flex items-baseline">
-                      <span className="text-4xl md:text-5xl font-heading font-black text-ink-900">
-                        {plan.price}
-                      </span>
+                    <div className="flex items-baseline flex-wrap gap-2">
+                      {isHalloween ? (
+                        <>
+                          <span className="text-4xl md:text-5xl font-heading font-black text-orange-600">
+                            {/* Calculate 20% discount roughly */}
+                            ${(parseFloat(plan.price.replace('$', '')) * 0.8).toFixed(2)}
+                          </span>
+                          <span className="text-lg font-heading font-bold text-ink-500 line-through decoration-2">
+                            {plan.price}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-4xl md:text-5xl font-heading font-black text-ink-900">
+                          {plan.price}
+                        </span>
+                      )}
+
                       <span className="text-ink-600 font-mono ml-2 text-xs md:text-sm">{plan.period}</span>
                     </div>
                   </div>
-                  
+
                   <p className="text-sm md:text-base text-ink-700 font-serif mb-4 md:mb-6 italic">{plan.description}</p>
 
                   <ul className="space-y-2 md:space-y-3 mb-6 md:mb-8">
@@ -137,8 +162,8 @@ export default function PremiumPage() {
                 Currently in Beta
               </h3>
               <p className="text-sm md:text-base text-ink-700 font-serif leading-relaxed">
-                We're still perfecting our newsletter and print services. During beta, enjoy unlimited access to 
-                The Veris digital newspaper completely free on our website. Premium subscriptions will 
+                We're still perfecting our newsletter and print services. During beta, enjoy unlimited access to
+                The Veris digital newspaper completely free on our website. Premium subscriptions will
                 be available soon!
               </p>
             </div>
@@ -148,11 +173,11 @@ export default function PremiumPage() {
 
       {/* Beta Modal */}
       {showBetaModal && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
           onClick={() => setShowBetaModal(false)}
         >
-          <div 
+          <div
             className="bg-paper-100 border-2 md:border-4 border-ink-900 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] max-w-md w-full p-6 md:p-8 mx-4"
             onClick={(e) => e.stopPropagation()}
           >
@@ -164,8 +189,8 @@ export default function PremiumPage() {
                 We're in Beta!
               </h2>
               <p className="text-sm md:text-base text-ink-700 font-serif mb-6 leading-relaxed">
-                Premium subscriptions aren't available yet. During our beta phase, enjoy free unlimited 
-                access to The Veris digital newspaper on our website. We'll notify you when premium 
+                Premium subscriptions aren't available yet. During our beta phase, enjoy free unlimited
+                access to The Veris digital newspaper on our website. We'll notify you when premium
                 editions launch!
               </p>
               <button

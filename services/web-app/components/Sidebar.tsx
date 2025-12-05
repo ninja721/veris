@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Newspaper, PlusSquare, Mail, Sparkles } from 'lucide-react'
+import HalloweenToggle from './HalloweenToggle'
 
 export default function Sidebar() {
     const pathname = usePathname()
@@ -33,8 +34,8 @@ export default function Sidebar() {
                     <Link
                         href="/veris"
                         className={`flex items-center gap-3 p-2 transition-all group ${pathname === '/veris'
-                                ? 'bg-ink-900 text-paper-100 shadow-md transform -rotate-1'
-                                : 'text-ink-800 hover:bg-paper-200 hover:pl-4'
+                            ? 'bg-ink-900 text-paper-100 shadow-md transform -rotate-1'
+                            : 'text-ink-800 hover:bg-paper-200 hover:pl-4'
                             }`}
                     >
                         <Newspaper size={20} />
@@ -44,8 +45,8 @@ export default function Sidebar() {
                     <Link
                         href="/submit"
                         className={`flex items-center gap-3 p-2 transition-all group ${pathname === '/submit'
-                                ? 'bg-ink-900 text-paper-100 shadow-md transform -rotate-1'
-                                : 'text-ink-800 hover:bg-paper-200 hover:pl-4'
+                            ? 'bg-ink-900 text-paper-100 shadow-md transform -rotate-1'
+                            : 'text-ink-800 hover:bg-paper-200 hover:pl-4'
                             }`}
                     >
                         <PlusSquare size={20} />
@@ -55,8 +56,8 @@ export default function Sidebar() {
                     <Link
                         href="/premium"
                         className={`flex items-center gap-3 p-2 transition-all group ${pathname === '/premium'
-                                ? 'bg-ink-900 text-paper-100 shadow-md transform -rotate-1'
-                                : 'text-ink-800 hover:bg-paper-200 hover:pl-4'
+                            ? 'bg-ink-900 text-paper-100 shadow-md transform -rotate-1'
+                            : 'text-ink-800 hover:bg-paper-200 hover:pl-4'
                             }`}
                     >
                         <Mail size={20} />
@@ -76,9 +77,12 @@ export default function Sidebar() {
             </div>
 
             <div className="p-4 border-t-2 border-ink-900 bg-amber-50">
-                <div className="flex items-center gap-2 text-amber-700">
-                    <Sparkles size={16} />
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider">BETA</span>
+                <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 text-amber-700">
+                        <Sparkles size={16} />
+                        <span className="font-mono text-xs font-bold uppercase tracking-wider">BETA</span>
+                    </div>
+                    <HalloweenToggle />
                 </div>
             </div>
         </aside>

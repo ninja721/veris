@@ -82,6 +82,56 @@
     --ring: var(--paper-400);
   }
 
+  .halloween {
+    /* Halloween Theme - Spooky Orange & Black */
+    --paper-50: #1c1410;
+    --paper-100: #2d1b0e;
+    --paper-200: #3d2611;
+    --paper-300: #5c3a1a;
+    --paper-400: #7c4d24;
+    --paper-500: #9c6030;
+    --paper-600: #c17a3c;
+    --paper-700: #d4894a;
+    --paper-800: #0a0604;
+    --paper-900: #0a0604;
+
+    --ink-50: #1a0f05;
+    --ink-100: #2d1b0e;
+    --ink-200: #3d2611;
+    --ink-300: #ea580c;
+    /* Orange borders */
+    --ink-400: #fb923c;
+    --ink-500: #ffa500;
+    /* Orange for category text */
+    --ink-600: #ffa500;
+    /* Orange for byline */
+    --ink-700: #ffb84d;
+    /* Light orange for evidence text */
+    --ink-800: #ffb84d;
+    /* Light orange for body text */
+    --ink-900: #ff9933;
+    /* Bright orange for titles */
+    --ink-950: #ffffff;
+
+    /* Tech Accents - Spooky */
+    --tech-cyan: #ff6b00;
+    --tech-magenta: #ff4500;
+    --tech-yellow: #ffa500;
+
+    --background: var(--paper-100);
+    --foreground: #ff9933;
+    /* Orange text */
+    --card: var(--paper-200);
+    --card-foreground: #ff9933;
+    --primary: #ea580c;
+    --primary-foreground: #ffffff;
+    --secondary: var(--paper-300);
+    --secondary-foreground: #ff9933;
+    --border: #ea580c;
+    /* Orange borders */
+    --ring: #ea580c;
+  }
+
   * {
     @apply border-border;
   }
@@ -90,8 +140,13 @@
     @apply bg-background text-foreground font-serif;
     background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stichTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: 'Playfair Display', serif;
   }
 }
@@ -100,7 +155,7 @@
   .newspaper-card {
     @apply bg-card text-card-foreground border border-border p-6 shadow-sm relative overflow-hidden;
   }
-  
+
   .newspaper-card::before {
     content: "";
     @apply absolute inset-0 pointer-events-none opacity-10;
@@ -122,38 +177,50 @@
     font-family: 'Courier Prime', monospace;
   }
 
+  .halloween .badge-verified {
+    @apply border-green-500 text-green-400 bg-green-950/50;
+  }
+
   .badge-false {
     @apply inline-flex items-center px-2 py-0.5 border-2 border-red-800 text-red-900 text-xs font-bold uppercase tracking-widest bg-red-100/50 rotate-2;
     font-family: 'Courier Prime', monospace;
+  }
+
+  .halloween .badge-false {
+    @apply border-red-500 text-red-400 bg-red-950/50;
   }
 
   .badge-disputed {
     @apply inline-flex items-center px-2 py-0.5 border-2 border-yellow-800 text-yellow-900 text-xs font-bold uppercase tracking-widest bg-yellow-100/50;
     font-family: 'Courier Prime', monospace;
   }
-  
+
+  .halloween .badge-disputed {
+    @apply border-yellow-500 text-yellow-400 bg-yellow-950/50;
+  }
+
   /* Glitch Effect */
   .glitch-wrapper {
     @apply relative inline-block;
   }
-  
+
   .glitch-text {
     @apply relative inline-block;
   }
-  
+
   .glitch-text::before,
   .glitch-text::after {
     content: attr(data-text);
     @apply absolute top-0 left-0 w-full h-full opacity-70;
   }
-  
+
   .glitch-text::before {
     left: 2px;
     text-shadow: -1px 0 #ff00ff;
     clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
     animation: glitch-anim-1 2s infinite linear alternate-reverse;
   }
-  
+
   .glitch-text::after {
     left: -2px;
     text-shadow: -1px 0 #00f3ff;
@@ -163,23 +230,77 @@
 }
 
 @keyframes glitch-anim-1 {
-  0% { clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); transform: translate(0); }
-  10% { clip-path: polygon(0 10%, 100% 10%, 100% 35%, 0 35%); transform: translate(-2px, 2px); }
-  20% { clip-path: polygon(0 5%, 100% 5%, 100% 25%, 0 25%); transform: translate(2px, -2px); }
-  30% { clip-path: polygon(0 20%, 100% 20%, 100% 55%, 0 55%); transform: translate(-1px, 1px); }
-  40% { clip-path: polygon(0 40%, 100% 40%, 100% 75%, 0 75%); transform: translate(1px, -1px); }
-  50% { clip-path: polygon(0 10%, 100% 10%, 100% 95%, 0 95%); transform: translate(0); }
-  100% { clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); transform: translate(0); }
+  0% {
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    transform: translate(0);
+  }
+
+  10% {
+    clip-path: polygon(0 10%, 100% 10%, 100% 35%, 0 35%);
+    transform: translate(-2px, 2px);
+  }
+
+  20% {
+    clip-path: polygon(0 5%, 100% 5%, 100% 25%, 0 25%);
+    transform: translate(2px, -2px);
+  }
+
+  30% {
+    clip-path: polygon(0 20%, 100% 20%, 100% 55%, 0 55%);
+    transform: translate(-1px, 1px);
+  }
+
+  40% {
+    clip-path: polygon(0 40%, 100% 40%, 100% 75%, 0 75%);
+    transform: translate(1px, -1px);
+  }
+
+  50% {
+    clip-path: polygon(0 10%, 100% 10%, 100% 95%, 0 95%);
+    transform: translate(0);
+  }
+
+  100% {
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    transform: translate(0);
+  }
 }
 
 @keyframes glitch-anim-2 {
-  0% { clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%); transform: translate(0); }
-  10% { clip-path: polygon(0 65%, 100% 65%, 100% 90%, 0 90%); transform: translate(2px, -2px); }
-  20% { clip-path: polygon(0 50%, 100% 50%, 100% 80%, 0 80%); transform: translate(-2px, 2px); }
-  30% { clip-path: polygon(0 70%, 100% 70%, 100% 95%, 0 95%); transform: translate(1px, -1px); }
-  40% { clip-path: polygon(0 60%, 100% 60%, 100% 85%, 0 85%); transform: translate(-1px, 1px); }
-  50% { clip-path: polygon(0 45%, 100% 45%, 100% 100%, 0 100%); transform: translate(0); }
-  100% { clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%); transform: translate(0); }
+  0% {
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    transform: translate(0);
+  }
+
+  10% {
+    clip-path: polygon(0 65%, 100% 65%, 100% 90%, 0 90%);
+    transform: translate(2px, -2px);
+  }
+
+  20% {
+    clip-path: polygon(0 50%, 100% 50%, 100% 80%, 0 80%);
+    transform: translate(-2px, 2px);
+  }
+
+  30% {
+    clip-path: polygon(0 70%, 100% 70%, 100% 95%, 0 95%);
+    transform: translate(1px, -1px);
+  }
+
+  40% {
+    clip-path: polygon(0 60%, 100% 60%, 100% 85%, 0 85%);
+    transform: translate(-1px, 1px);
+  }
+
+  50% {
+    clip-path: polygon(0 45%, 100% 45%, 100% 100%, 0 100%);
+    transform: translate(0);
+  }
+
+  100% {
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    transform: translate(0);
+  }
 }
 
 /* Newspaper Flip Animations */
@@ -189,9 +310,11 @@
     transform-origin: left center;
     opacity: 1;
   }
+
   50% {
     opacity: 0.8;
   }
+
   100% {
     transform: perspective(2000px) rotateY(-180deg);
     transform-origin: left center;
@@ -205,9 +328,11 @@
     transform-origin: right center;
     opacity: 0;
   }
+
   50% {
     opacity: 0.8;
   }
+
   100% {
     transform: perspective(2000px) rotateY(0deg);
     transform-origin: right center;
