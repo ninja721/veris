@@ -26,8 +26,9 @@ export default function Newspaper({ claims }: NewspaperProps) {
   const [isFlipping, setIsFlipping] = useState(false)
   const [flipDirection, setFlipDirection] = useState<'next' | 'prev' | null>(null)
   const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null)
+  const [isHalloween, setIsHalloween] = useState(false)
 
-  const claimsPerPage = 5 // 1 Lead + 4 others
+  const claimsPerPage = 5
   const totalPages = Math.ceil(claims.length / claimsPerPage)
 
   const getCurrentPageClaims = () => {
@@ -43,7 +44,7 @@ export default function Newspaper({ claims }: NewspaperProps) {
         setCurrentPage(prev => prev + 1)
         setIsFlipping(false)
         setFlipDirection(null)
-        setSelectedClaimId(null) // Reset selection on page flip
+        setSelectedClaimId(null)
       }, 800)
     }
   }
@@ -56,7 +57,7 @@ export default function Newspaper({ claims }: NewspaperProps) {
         setCurrentPage(prev => prev - 1)
         setIsFlipping(false)
         setFlipDirection(null)
-        setSelectedClaimId(null) // Reset selection on page flip
+        setSelectedClaimId(null)
       }, 800)
     }
   }
@@ -75,17 +76,9 @@ export default function Newspaper({ claims }: NewspaperProps) {
   }
 
   const pageClaims = getCurrentPageClaims()
-
-  // Determine the lead claim: either the selected one or the first one on the page
   const leadClaim = selectedClaimId
     ? pageClaims.find(c => c.id === selectedClaimId) || pageClaims[0]
     : pageClaims[0]
-
-  // Filter out the lead claim from the sidebar list so it doesn't appear twice
-  // OR keep it to maintain the list structure? Let's keep it but highlight it or just show all sidebar items
-  // Actually, standard newspaper web behavior is clicking a headline opens it. 
-  // Here we want to "read it" in the main view.
-  // Let's just show all claims in the sidebar, but maybe highlight the active one.
   const sidebarClaims = pageClaims.filter(c => c.id !== leadClaim?.id)
 
   const today = new Date().toLocaleDateString('en-US', {
@@ -96,9 +89,8 @@ export default function Newspaper({ claims }: NewspaperProps) {
   })
 
   return (
-    <div className="min-h-screen bg-paper-800 py-8 px-4 flex items-center justify-center overflow-hidden">
+    <div className={`min-h-screen bg-paper-800 py-8 px-4 flex items-center justify-center overflow-hidden ${isHalloween ? 'halloween' : ''}`}>
       <div className="max-w-6xl w-full perspective-2000">
-        {/* Newspaper Container */}
         <div className={`
           relative bg-paper-100 shadow-2xl transition-transform duration-800 transform-style-3d
           ${isFlipping && flipDirection === 'next' ? 'animate-flip-out' : ''}
@@ -149,6 +141,45 @@ export default function Newspaper({ claims }: NewspaperProps) {
                     <span>•</span>
                     <span>Confidence: {leadClaim.confidence}%</span>
                   </div>
+
+                  {/* Media Display for Lead Story */}
+                  {leadClaim.images && leadClaim.images.length > 0 && leadClaim.images[0] && (
+                    <div className="mb-6 border-4 border-ink-900 shadow-lg bg-paper-200">
+                      <img
+                        src={leadClaim.images[0]}
+                        alt="Evidence"
+                        className="w-full h-auto"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none'
+                        }}
+                      />
+                      <div className="bg-paper-200 px-3 py-2 border-t-2 border-ink-900">
+                        <p className="text-xs font-mono text-ink-700 italic">Photographic Evidence</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {leadClaim.videos && leadClaim.videos.length > 0 && (
+                    <div className="mb-6 border-4 border-ink-900 shadow-lg">
+                      <video
+                        controls
+                        className="w-full h-auto bg-black"
+                        preload="metadata"
+                        crossOrigin="anonymous"
+                        onError={(e) => {
+                          console.error('Video load error:', leadClaim.videos?.[0])
+                          e.currentTarget.style.display = 'none'
+                        }}
+                      >
+                        <source src={leadClaim.videos[0]} type="video/mp4" />
+                        <source src={leadClaim.videos[0]} type="video/webm" />
+                        Your browser does not support the video tag.
+                      </video>
+                      <div className="bg-paper-200 px-3 py-2 border-t-2 border-ink-900">
+                        <p className="text-xs font-mono text-ink-700 italic">Video Evidence</p>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="prose prose-lg font-serif text-ink-800 first-letter:text-5xl first-letter:font-bold first-letter:float-left first-letter:mr-3 first-letter:mt-[-10px]">
                     {leadClaim.evidence}
@@ -234,8 +265,16 @@ export default function Newspaper({ claims }: NewspaperProps) {
               <ChevronLeft size={16} /> <span className="hidden sm:inline">Previous</span><span className="sm:hidden">Prev</span>
             </button>
 
-            <div className="font-mono text-xs md:text-sm">
-              PAGE {currentPage + 1} OF {totalPages}
+            <div className="flex items-center gap-4">
+              <div className="font-mono text-xs md:text-sm">
+                PAGE {currentPage + 1} OF {totalPages}
+              </div>
+              <button
+                onClick={() => setIsHalloween(!isHalloween)}
+                className="px-3 py-1 bg-paper-300 border-2 border-ink-900 font-mono text-xs font-bold uppercase tracking-wider hover:bg-paper-400 transition-all"
+              >
+                {isHalloween ? '🎃' : '📰'}
+              </button>
             </div>
 
             <button
@@ -247,9 +286,6 @@ export default function Newspaper({ claims }: NewspaperProps) {
             </button>
           </footer>
 
-          {/* Decorative Elements */}
-          <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-paper-400 to-transparent opacity-20 pointer-events-none"></div>
-          <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-paper-400 to-transparent opacity-20 pointer-events-none"></div>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Newspaper, PlusSquare, Mail } from 'lucide-react'
+import HalloweenToggle from './HalloweenToggle'
 
 export default function BottomNav() {
     const pathname = usePathname()
@@ -13,8 +14,8 @@ export default function BottomNav() {
                 <Link
                     href="/veris"
                     className={`flex flex-col items-center gap-1 p-2 transition-all ${pathname === '/veris'
-                            ? 'text-ink-900 scale-110'
-                            : 'text-ink-500 hover:text-ink-700'
+                        ? 'text-ink-900 scale-110'
+                        : 'text-ink-500 hover:text-ink-700'
                         }`}
                 >
                     <Newspaper size={24} />
@@ -26,8 +27,8 @@ export default function BottomNav() {
                 <Link
                     href="/submit"
                     className={`flex flex-col items-center gap-1 p-2 transition-all ${pathname === '/submit'
-                            ? 'text-ink-900 scale-110'
-                            : 'text-ink-500 hover:text-ink-700'
+                        ? 'text-ink-900 scale-110'
+                        : 'text-ink-500 hover:text-ink-700'
                         }`}
                 >
                     <PlusSquare size={24} />
@@ -39,13 +40,19 @@ export default function BottomNav() {
                 <Link
                     href="/premium"
                     className={`flex flex-col items-center gap-1 p-2 transition-all ${pathname === '/premium'
-                            ? 'text-ink-900 scale-110'
-                            : 'text-ink-500 hover:text-ink-700'
+                        ? 'text-ink-900 scale-110'
+                        : 'text-ink-500 hover:text-ink-700'
                         }`}
                 >
                     <Mail size={24} />
                     <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Premium</span>
                 </Link>
+
+                <div className="w-px h-8 bg-ink-300"></div>
+
+                <div className="p-2">
+                    <HalloweenToggle />
+                </div>
             </div>
         </nav>
     )

@@ -734,3 +734,83 @@ body {
     transform: translate(0);
   }
 }
+
+/* Halloween Theme */
+body.halloween {
+  --paper-50: #1a0f0a;
+  --paper-100: #2d1810;
+  --paper-200: #3d2318;
+  --paper-300: #4d2e20;
+  --bg-primary: #1a0f0a;
+  --bg-secondary: #2d1810;
+  --bg-tertiary: #3d2318;
+  --text-primary: #ff6b35;
+  --text-secondary: #ffa07a;
+  --text-inverse: #1a0f0a;
+  --ink-900: #ff6b35;
+  --ink-800: #ff8555;
+  --ink-700: #ffa07a;
+  --ink-600: #ffb89f;
+  --border-medium: #ff6b35;
+  --border-dark: #ff6b35;
+}
+
+body.halloween .card {
+  background: #2d1810;
+  border-color: #ff6b35;
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+}
+
+body.halloween .card-header {
+  background: #3d2318;
+  border-color: #ff6b35;
+}
+
+body.halloween .btn {
+  border-color: #ff6b35;
+}
+
+body.halloween .btn-primary {
+  background: #ff6b35;
+  color: #1a0f0a;
+}
+
+body.halloween .btn-primary:hover {
+  background: #ff8555;
+  box-shadow: 4px 4px 0px #ff6b35;
+}
+
+body.halloween .content-item {
+  background: #2d1810;
+  border-color: #ff6b35;
+}
+
+body.halloween .content-item.selected {
+  border-color: #ff6b35;
+  background: #3d2318;
+  box-shadow: 0 0 15px rgba(255, 107, 53, 0.4);
+}
+
+body.halloween .modal-content {
+  background: #2d1810;
+  border-color: #ff6b35;
+  box-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
+}
+
+body.halloween .modal-header {
+  background: #3d2318;
+  border-color: #ff6b35;
+}
+
+body.halloween .progress-bar {
+  background: #3d2318;
+  border-color: #ff6b35;
+}
+
+body.halloween .progress-fill {
+  background: repeating-linear-gradient(45deg,
+      #ff6b35,
+      #ff6b35 10px,
+      #ff8555 10px,
+      #ff8555 20px);
+}
