@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { Image, Video, Type, X, Upload } from 'lucide-react'
+import { Image, Video, Type, X, Upload, Send } from 'lucide-react'
 
 type SubmitMode = 'text' | 'image' | 'video'
 
@@ -95,153 +95,193 @@ export default function SubmitPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-4 sm:py-8 px-4">
-      <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
-        {/* Header */}
-        <div className="border-b border-neutral-200 p-3 sm:p-4 flex items-center justify-between bg-white sticky top-0 z-10">
-          <h1 className="text-base sm:text-lg font-semibold text-neutral-900">Create new verification</h1>
-          {loading && <span className="text-xs sm:text-sm text-neutral-500">Processing...</span>}
-        </div>
-
-        <div className="p-4 sm:p-6">
-          {/* Mode Selector */}
-          <div className="flex gap-1 sm:gap-2 mb-4 sm:mb-6 p-1 bg-neutral-100 rounded-lg w-full sm:w-fit overflow-x-auto">
-            <button
-              onClick={() => setMode('text')}
-              className={`flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${mode === 'text' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
-                }`}
-            >
-              <Type size={16} className="sm:w-[18px] sm:h-[18px]" />
-              Text
-            </button>
-            <button
-              onClick={() => setMode('image')}
-              className={`flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${mode === 'image' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
-                }`}
-            >
-              <Image size={16} className="sm:w-[18px] sm:h-[18px]" />
-              Image
-            </button>
-            <button
-              onClick={() => setMode('video')}
-              className={`flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${mode === 'video' ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-900'
-                }`}
-            >
-              <Video size={16} className="sm:w-[18px] sm:h-[18px]" />
-              Video
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-            {mode === 'text' ? (
-              <textarea
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                className="w-full min-h-[200px] sm:min-h-[300px] p-3 sm:p-4 text-base sm:text-lg border-none focus:ring-0 resize-none placeholder:text-neutral-400"
-                placeholder="What would you like to verify today?"
-                autoFocus
-              />
-            ) : (
-              <div
-                className={`aspect-square sm:aspect-video rounded-xl border-2 border-dashed flex flex-col items-center justify-center transition-colors ${dragActive ? 'border-blue-500 bg-blue-50' : 'border-neutral-200 bg-neutral-50'
-                  }`}
-                onDragEnter={handleDrag}
-                onDragLeave={handleDrag}
-                onDragOver={handleDrag}
-                onDrop={handleDrop}
-              >
-                {file ? (
-                  <div className="relative w-full h-full">
-                    {mode === 'image' ? (
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt="Preview"
-                        className="w-full h-full object-contain rounded-lg"
-                      />
-                    ) : (
-                      <video
-                        src={URL.createObjectURL(file)}
-                        className="w-full h-full object-contain rounded-lg"
-                        controls
-                      />
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => setFile(null)}
-                      className="absolute top-2 right-2 p-1 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
-                    >
-                      <X size={20} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="text-center p-4 sm:p-8">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-neutral-200 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                      <Upload size={24} className="sm:w-8 sm:h-8 text-neutral-500" />
-                    </div>
-                    <p className="text-base sm:text-lg font-medium text-neutral-900 mb-2">
-                      Drag photos or videos here
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="text-sm sm:text-base text-blue-500 font-semibold hover:text-blue-600"
-                    >
-                      Select from computer
-                    </button>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept={mode === 'image' ? 'image/*' : 'video/*'}
-                      onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
-                      className="hidden"
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-
-            {(mode === 'image' || mode === 'video') && file && (
-              <textarea
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                className="w-full p-2 sm:p-3 border-t border-neutral-100 focus:ring-0 resize-none text-xs sm:text-sm"
-                placeholder="Add a caption or context..."
-                rows={3}
-              />
-            )}
-
-            <div className="flex items-center justify-end pt-3 sm:pt-4 border-t border-neutral-100">
-              <button
-                type="submit"
-                disabled={loading || (mode === 'text' && !text.trim()) || ((mode === 'image' || mode === 'video') && !file)}
-                className="w-full sm:w-auto px-6 py-2.5 sm:py-2 bg-blue-500 text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {loading ? 'Verifying...' : 'Verify'}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      {/* Result Notification */}
-      {result && (
-        <div className={`mt-4 sm:mt-6 p-3 sm:p-4 rounded-lg border ${result.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
-          }`}>
-          <div className="flex items-start sm:items-center gap-2 sm:gap-3">
-            <div className={`text-xl sm:text-2xl flex-shrink-0 ${result.success ? 'text-green-500' : 'text-red-500'}`}>
-              {result.success ? '✓' : '✕'}
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className={`text-sm sm:text-base font-medium ${result.success ? 'text-green-900' : 'text-red-900'}`}>
-                {result.success ? 'Verification Started' : 'Submission Failed'}
-              </h3>
-              <p className={`text-xs sm:text-sm ${result.success ? 'text-green-700' : 'text-red-700'}`}>
-                {result.message}
+    <div className="min-h-screen bg-paper-800 py-8 px-4 flex items-center justify-center">
+      <div className="max-w-2xl w-full">
+        <div className="newspaper-card transform rotate-1 transition-transform hover:rotate-0 duration-500">
+          {/* Header */}
+          <div className="border-b-2 border-ink-900 pb-4 mb-6 flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-heading font-black text-ink-900 uppercase tracking-tight">
+                Submit a Tip
+              </h1>
+              <p className="font-mono text-xs text-ink-600 mt-1 uppercase tracking-widest">
+                Help us verify the truth
               </p>
             </div>
+            {loading && (
+              <div className="font-mono text-xs font-bold text-ink-500 animate-pulse uppercase border border-ink-500 px-2 py-1">
+                Transmitting...
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-6">
+            {/* Mode Selector */}
+            <div className="flex gap-4 border-b border-ink-300 pb-6">
+              <button
+                onClick={() => setMode('text')}
+                className={`flex-1 flex flex-col items-center gap-2 p-4 border-2 transition-all ${mode === 'text'
+                    ? 'bg-ink-900 text-paper-100 border-ink-900 shadow-md transform -translate-y-1'
+                    : 'bg-paper-100 text-ink-600 border-ink-300 hover:border-ink-900 hover:text-ink-900'
+                  }`}
+              >
+                <Type size={24} />
+                <span className="font-mono text-xs font-bold uppercase tracking-wider">Text</span>
+              </button>
+              <button
+                onClick={() => setMode('image')}
+                className={`flex-1 flex flex-col items-center gap-2 p-4 border-2 transition-all ${mode === 'image'
+                    ? 'bg-ink-900 text-paper-100 border-ink-900 shadow-md transform -translate-y-1'
+                    : 'bg-paper-100 text-ink-600 border-ink-300 hover:border-ink-900 hover:text-ink-900'
+                  }`}
+              >
+                <Image size={24} />
+                <span className="font-mono text-xs font-bold uppercase tracking-wider">Image</span>
+              </button>
+              <button
+                onClick={() => setMode('video')}
+                className={`flex-1 flex flex-col items-center gap-2 p-4 border-2 transition-all ${mode === 'video'
+                    ? 'bg-ink-900 text-paper-100 border-ink-900 shadow-md transform -translate-y-1'
+                    : 'bg-paper-100 text-ink-600 border-ink-300 hover:border-ink-900 hover:text-ink-900'
+                  }`}
+              >
+                <Video size={24} />
+                <span className="font-mono text-xs font-bold uppercase tracking-wider">Video</span>
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {mode === 'text' ? (
+                <div className="relative">
+                  <textarea
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    className="w-full min-h-[300px] p-6 text-lg font-serif bg-paper-50 border-2 border-ink-200 focus:border-ink-900 focus:ring-0 resize-none placeholder:text-ink-400 transition-colors"
+                    placeholder="Type your story here..."
+                    autoFocus
+                  />
+                  <div className="absolute bottom-4 right-4 font-mono text-xs text-ink-400">
+                    {text.length} chars
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className={`aspect-video rounded-sm border-2 border-dashed flex flex-col items-center justify-center transition-all ${dragActive
+                      ? 'border-ink-900 bg-paper-200'
+                      : 'border-ink-300 bg-paper-50 hover:border-ink-500'
+                    }`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
+                  {file ? (
+                    <div className="relative w-full h-full p-2">
+                      {mode === 'image' ? (
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt="Preview"
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        <video
+                          src={URL.createObjectURL(file)}
+                          className="w-full h-full object-contain"
+                          controls
+                        />
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setFile(null)}
+                        className="absolute top-4 right-4 p-2 bg-ink-900 text-paper-100 hover:bg-ink-700 transition-colors border border-paper-100 shadow-md"
+                      >
+                        <X size={20} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="text-center p-8">
+                      <div className="w-16 h-16 border-2 border-ink-300 rounded-full flex items-center justify-center mx-auto mb-4 text-ink-400">
+                        <Upload size={32} />
+                      </div>
+                      <p className="text-xl font-heading font-bold text-ink-900 mb-2">
+                        Drop Evidence Here
+                      </p>
+                      <p className="font-serif text-ink-600 mb-6">
+                        or
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="btn-secondary text-sm"
+                      >
+                        Select File
+                      </button>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept={mode === 'image' ? 'image/*' : 'video/*'}
+                        onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
+                        className="hidden"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {(mode === 'image' || mode === 'video') && file && (
+                <textarea
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  className="w-full p-4 border-2 border-ink-200 bg-paper-50 focus:border-ink-900 focus:ring-0 resize-none font-serif text-sm"
+                  placeholder="Add context to this evidence..."
+                  rows={3}
+                />
+              )}
+
+              <div className="flex items-center justify-end pt-6 border-t-2 border-ink-900">
+                <button
+                  type="submit"
+                  disabled={loading || (mode === 'text' && !text.trim()) || ((mode === 'image' || mode === 'video') && !file)}
+                  className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center"
+                >
+                  {loading ? (
+                    'Transmitting...'
+                  ) : (
+                    <>
+                      Submit for Verification <Send size={16} />
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      )}
+
+        {/* Result Notification */}
+        {result && (
+          <div className={`mt-6 p-6 border-2 ${result.success
+              ? 'bg-paper-100 border-ink-900'
+              : 'bg-paper-100 border-ink-900'
+            } shadow-xl relative overflow-hidden`}>
+            {/* Stamp Effect */}
+            <div className={`absolute top-4 right-4 border-4 ${result.success ? 'border-green-800 text-green-800' : 'border-red-800 text-red-800'
+              } p-2 font-black uppercase tracking-widest transform rotate-12 opacity-80 text-xl pointer-events-none`}>
+              {result.success ? 'RECEIVED' : 'REJECTED'}
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="flex-1">
+                <h3 className="text-xl font-heading font-bold text-ink-900 mb-2">
+                  {result.success ? 'Submission Received' : 'Transmission Error'}
+                </h3>
+                <p className="font-serif text-ink-700">
+                  {result.message}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

@@ -2,50 +2,84 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=Courier+Prime:wght@400;700&display=swap');
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --radius: 0.5rem;
+    /* Paper Tones */
+    --paper-50: #fdfbf7;
+    --paper-100: #f9f4e6;
+    --paper-200: #f0e6cc;
+    --paper-300: #e6d5aa;
+    --paper-400: #dcc488;
+    --paper-500: #d2b46e;
+    --paper-600: #a89058;
+    --paper-700: #7e6c42;
+    --paper-800: #54482c;
+    --paper-900: #2a2416;
+
+    /* Ink Colors */
+    --ink-50: #f2f2f2;
+    --ink-100: #d9d9d9;
+    --ink-200: #bfbfbf;
+    --ink-300: #a6a6a6;
+    --ink-400: #8c8c8c;
+    --ink-500: #737373;
+    --ink-600: #595959;
+    --ink-700: #404040;
+    --ink-800: #262626;
+    --ink-900: #1a1a1a;
+    --ink-950: #0d0d0d;
+
+    /* Tech Accents */
+    --tech-cyan: #00f3ff;
+    --tech-magenta: #ff00ff;
+    --tech-yellow: #ffff00;
+
+    /* Semantic */
+    --background: var(--paper-100);
+    --foreground: var(--ink-900);
+    --card: var(--paper-50);
+    --card-foreground: var(--ink-900);
+    --popover: var(--paper-50);
+    --popover-foreground: var(--ink-900);
+    --primary: var(--ink-900);
+    --primary-foreground: var(--paper-100);
+    --secondary: var(--paper-200);
+    --secondary-foreground: var(--ink-900);
+    --muted: var(--paper-200);
+    --muted-foreground: var(--ink-600);
+    --accent: var(--paper-300);
+    --accent-foreground: var(--ink-900);
+    --destructive: #8a1f1f;
+    --destructive-foreground: var(--paper-50);
+    --border: var(--paper-400);
+    --input: var(--paper-200);
+    --ring: var(--ink-900);
+    --radius: 0.25rem;
   }
 
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
+    /* Inverted "Negative" Newspaper Look */
+    --background: var(--ink-950);
+    --foreground: var(--paper-100);
+    --card: var(--ink-900);
+    --card-foreground: var(--paper-100);
+    --popover: var(--ink-900);
+    --popover-foreground: var(--paper-100);
+    --primary: var(--paper-100);
+    --primary-foreground: var(--ink-900);
+    --secondary: var(--ink-800);
+    --secondary-foreground: var(--paper-100);
+    --muted: var(--ink-800);
+    --muted-foreground: var(--paper-400);
+    --accent: var(--ink-700);
+    --accent-foreground: var(--paper-100);
+    --destructive: #ff4444;
+    --destructive-foreground: var(--ink-950);
+    --border: var(--ink-700);
+    --input: var(--ink-800);
+    --ring: var(--paper-400);
   }
 
   * {
@@ -53,91 +87,138 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-serif;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stichTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
   }
 }
 
 @layer components {
-  .layout-grid {
-    @apply grid grid-cols-1 md:grid-cols-[244px_1fr] lg:grid-cols-[244px_1fr_320px] max-w-[1400px] mx-auto min-h-screen relative;
+  .newspaper-card {
+    @apply bg-card text-card-foreground border border-border p-6 shadow-sm relative overflow-hidden;
   }
-
-  .sidebar-link {
-    @apply flex items-center gap-4 p-3 rounded-lg hover:bg-neutral-100 transition-colors text-neutral-900 font-medium;
-  }
-
-  .sidebar-link.active {
-    @apply font-bold;
-  }
-
-  .feed-container {
-    @apply w-full py-8 px-4;
+  
+  .newspaper-card::before {
+    content: "";
+    @apply absolute inset-0 pointer-events-none opacity-10;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stichTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
   }
 
   .btn-primary {
-    @apply bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-primary text-primary-foreground font-bold px-6 py-2 transition-all hover:bg-ink-700 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wider border-2 border-transparent hover:border-paper-300;
+    font-family: 'Courier Prime', monospace;
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-neutral-50 text-neutral-900 font-semibold px-6 py-2 rounded-lg border border-neutral-300 transition-colors;
-  }
-
-  .card {
-    @apply bg-white text-neutral-900 rounded-xl border border-neutral-200 shadow-sm p-6;
+    @apply bg-transparent text-primary border-2 border-primary font-bold px-6 py-2 transition-all hover:bg-primary hover:text-primary-foreground uppercase tracking-wider;
+    font-family: 'Courier Prime', monospace;
   }
 
   .badge-verified {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800;
+    @apply inline-flex items-center px-2 py-0.5 border-2 border-green-800 text-green-900 text-xs font-bold uppercase tracking-widest bg-green-100/50 -rotate-2;
+    font-family: 'Courier Prime', monospace;
   }
 
   .badge-false {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800;
+    @apply inline-flex items-center px-2 py-0.5 border-2 border-red-800 text-red-900 text-xs font-bold uppercase tracking-widest bg-red-100/50 rotate-2;
+    font-family: 'Courier Prime', monospace;
   }
 
   .badge-disputed {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800;
+    @apply inline-flex items-center px-2 py-0.5 border-2 border-yellow-800 text-yellow-900 text-xs font-bold uppercase tracking-widest bg-yellow-100/50;
+    font-family: 'Courier Prime', monospace;
   }
+  
+  /* Glitch Effect */
+  .glitch-wrapper {
+    @apply relative inline-block;
+  }
+  
+  .glitch-text {
+    @apply relative inline-block;
+  }
+  
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    @apply absolute top-0 left-0 w-full h-full opacity-70;
+  }
+  
+  .glitch-text::before {
+    left: 2px;
+    text-shadow: -1px 0 #ff00ff;
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    animation: glitch-anim-1 2s infinite linear alternate-reverse;
+  }
+  
+  .glitch-text::after {
+    left: -2px;
+    text-shadow: -1px 0 #00f3ff;
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+  }
+}
 
-  .badge-unverifiable {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800;
-  }
+@keyframes glitch-anim-1 {
+  0% { clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); transform: translate(0); }
+  10% { clip-path: polygon(0 10%, 100% 10%, 100% 35%, 0 35%); transform: translate(-2px, 2px); }
+  20% { clip-path: polygon(0 5%, 100% 5%, 100% 25%, 0 25%); transform: translate(2px, -2px); }
+  30% { clip-path: polygon(0 20%, 100% 20%, 100% 55%, 0 55%); transform: translate(-1px, 1px); }
+  40% { clip-path: polygon(0 40%, 100% 40%, 100% 75%, 0 75%); transform: translate(1px, -1px); }
+  50% { clip-path: polygon(0 10%, 100% 10%, 100% 95%, 0 95%); transform: translate(0); }
+  100% { clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); transform: translate(0); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%); transform: translate(0); }
+  10% { clip-path: polygon(0 65%, 100% 65%, 100% 90%, 0 90%); transform: translate(2px, -2px); }
+  20% { clip-path: polygon(0 50%, 100% 50%, 100% 80%, 0 80%); transform: translate(-2px, 2px); }
+  30% { clip-path: polygon(0 70%, 100% 70%, 100% 95%, 0 95%); transform: translate(1px, -1px); }
+  40% { clip-path: polygon(0 60%, 100% 60%, 100% 85%, 0 85%); transform: translate(-1px, 1px); }
+  50% { clip-path: polygon(0 45%, 100% 45%, 100% 100%, 0 100%); transform: translate(0); }
+  100% { clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%); transform: translate(0); }
 }
 
 /* Newspaper Flip Animations */
 @keyframes flip-right {
   0% {
-    transform: perspective(1000px) rotateY(0deg);
+    transform: perspective(2000px) rotateY(0deg);
+    transform-origin: left center;
     opacity: 1;
   }
   50% {
-    transform: perspective(1000px) rotateY(-90deg);
-    opacity: 0.5;
+    opacity: 0.8;
   }
   100% {
-    transform: perspective(1000px) rotateY(0deg);
-    opacity: 1;
+    transform: perspective(2000px) rotateY(-180deg);
+    transform-origin: left center;
+    opacity: 0;
   }
 }
 
-@keyframes flip-left {
+@keyframes flip-in-right {
   0% {
-    transform: perspective(1000px) rotateY(0deg);
-    opacity: 1;
+    transform: perspective(2000px) rotateY(180deg);
+    transform-origin: right center;
+    opacity: 0;
   }
   50% {
-    transform: perspective(1000px) rotateY(90deg);
-    opacity: 0.5;
+    opacity: 0.8;
   }
   100% {
-    transform: perspective(1000px) rotateY(0deg);
+    transform: perspective(2000px) rotateY(0deg);
+    transform-origin: right center;
     opacity: 1;
   }
 }
 
-.animate-flip-right {
-  animation: flip-right 0.6s ease-in-out;
+.animate-flip-out {
+  animation: flip-right 0.8s cubic-bezier(0.645, 0.045, 0.355, 1.000) forwards;
 }
 
-.animate-flip-left {
-  animation: flip-left 0.6s ease-in-out;
+.animate-flip-in {
+  animation: flip-in-right 0.8s cubic-bezier(0.645, 0.045, 0.355, 1.000) forwards;
 }
