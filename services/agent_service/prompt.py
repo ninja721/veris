@@ -44,10 +44,11 @@ Pipeline Steps:
        * For text: raw_text="content"
 
 4. FINAL REPORT
-   - Total claims: X
-   - Verified: X | False: X | Disputed: X | Unverifiable: X
-   - Saved: X
-   - Answer in bullet points
+   Provide a concise summary in paragraph format:
+   - Total claims processed
+   - Verification breakdown (verified/false/disputed/unverifiable)
+   - Number successfully saved to database
+   - Use professional, journalistic tone
 
 Rules:
 - Content is NEVER mixed (text OR image OR video)
