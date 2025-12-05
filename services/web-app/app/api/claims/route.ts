@@ -17,8 +17,7 @@ export async function GET(request: Request) {
       limit,
       hasMore: claims.length === limit
     })
-  } catch (error) {
-    console.error('API error:', error)
+  } catch {
     return NextResponse.json({
       success: false,
       claims: [],
