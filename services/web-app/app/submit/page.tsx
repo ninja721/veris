@@ -14,20 +14,11 @@ export default function SubmitPage() {
   const [dragActive, setDragActive] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  console.log('SubmitPage render:', { mode, hasText: !!text, hasFile: !!file, loading })
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    console.log('Submit clicked:', { mode, text: text.substring(0, 50), file: file?.name })
 
-    if (mode === 'text' && !text.trim()) {
-      console.log('No text provided')
-      return
-    }
-    if ((mode === 'image' || mode === 'video') && !file) {
-      console.log('No file provided')
-      return
-    }
+    if (mode === 'text' && !text.trim()) return
+    if ((mode === 'image' || mode === 'video') && !file) return
 
     setLoading(true)
     setResult(null)
@@ -37,7 +28,6 @@ export default function SubmitPage() {
 
       if (mode === 'text') {
         formData.append('text', text)
-        console.log('Submitting text:', text.substring(0, 100))
       } else {
         if (file) formData.append('file', file)
         if (text.trim()) formData.append('text', text)
@@ -56,7 +46,6 @@ export default function SubmitPage() {
         setFile(null)
       }
     } catch (error) {
-      console.error('Submit error:', error)
       setResult({
         success: false,
         message: 'Failed to submit. Please try again.'

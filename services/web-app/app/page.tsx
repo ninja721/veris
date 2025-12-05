@@ -1,19 +1,18 @@
-import ClaimFeed from '@/components/ClaimFeed'
+'use client'
+
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
-  console.log('Home page rendering')
+  const router = useRouter()
+  
+  useEffect(() => {
+    router.push('/veris')
+  }, [router])
   
   return (
-    <div className="w-full min-h-screen bg-white">
-      <div className="border-b border-neutral-200 px-4 py-6 bg-white">
-        <h1 className="text-2xl font-bold text-neutral-900">
-          Home
-        </h1>
-      </div>
-      
-      <div className="w-full">
-        <ClaimFeed />
-      </div>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
     </div>
   )
 }
