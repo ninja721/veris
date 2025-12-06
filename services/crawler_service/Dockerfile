@@ -15,30 +15,35 @@ COPY src ./src
 COPY public ./public
 
 # Build TypeScript
-RUN npm run build || npx tsc
-
-# Copy public folder to dist
-RUN cp -r public dist/public
+RUN npx tsc
 
 # Production stage
 FROM node:18-alpine
 
 WORKDIR /app
 
+# Set NODE_ENV
+ENV NODE_ENV=production
+ENV PORT=8080
+
 # Copy package files
 COPY package.json ./
 
 # Install production dependencies only
-RUN npm install --production
+RUN npm install --omit=dev
 
 # Copy built files from builder
 COPY --from=builder /app/dist ./dist
 
-# Expose port (Cloud Run uses PORT env var, defaults to 8080)
+# Copy public folder
+COPY --from=builder /app/public ./public
+
+# Expose port
 EXPOSE 8080
 
-# Set default PORT for Cloud Run
-ENV PORT=8080
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:8080/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
 # Start server
 CMD ["node", "dist/server.js"]
