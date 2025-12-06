@@ -41,12 +41,22 @@ export class RedditCrawler {
     // Use Reddit JSON API (no auth needed for public posts)
     const url = `https://www.reddit.com/r/${subreddit}/hot.json?limit=25`;
     
+    // Reddit requires proper User-Agent and headers to avoid 403
     const response = await axios.get(url, {
       headers: {
-        'User-Agent': 'Veris-Crawler/1.0',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'application/json',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'DNT': '1',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
       },
       timeout: 15000,
     });
+    
+    // Add delay to respect rate limits
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     const posts = response.data.data.children;
     const items: RawContentItem[] = [];

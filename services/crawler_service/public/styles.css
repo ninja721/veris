@@ -115,7 +115,7 @@ body {
 
 .title {
   font-family: 'Playfair Display', serif;
-  font-size: 4rem;
+  font-size: clamp(2rem, 8vw, 4rem);
   font-weight: 900;
   color: var(--ink-900);
   text-transform: uppercase;
@@ -126,14 +126,20 @@ body {
 
 .subtitle {
   font-family: 'Courier Prime', monospace;
-  font-size: 1rem;
+  font-size: clamp(0.7rem, 2vw, 1rem);
   color: var(--ink-600);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   border-top: 1px solid var(--ink-900);
   border-bottom: 1px solid var(--ink-900);
   display: inline-block;
-  padding: 0.5rem 2rem;
+  padding: 0.5rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .subtitle {
+    padding: 0.5rem 2rem;
+  }
 }
 
 /* Card */
@@ -146,23 +152,53 @@ body {
 }
 
 .card-header {
-  padding: var(--space-4) var(--space-6);
+  padding: var(--space-3);
   border-bottom: 2px solid var(--ink-900);
   background: var(--paper-200);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
+@media (min-width: 640px) {
+  .card-header {
+    padding: var(--space-4) var(--space-6);
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 .card-title {
   font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
   font-weight: 700;
   color: var(--ink-900);
 }
 
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .header-actions {
+    width: auto;
+    gap: var(--space-3);
+  }
+}
+
 .card-content {
-  padding: var(--space-6);
+  padding: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .card-content {
+    padding: var(--space-6);
+  }
 }
 
 /* Buttons */
@@ -362,12 +398,13 @@ body {
 
 .content-item-title {
   font-family: 'Playfair Display', serif;
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 3vw, 1.2rem);
   font-weight: 700;
   margin-bottom: var(--space-2);
   color: var(--ink-900);
   cursor: pointer;
   transition: color 200ms ease;
+  word-wrap: break-word;
 }
 
 .content-item-title:hover {
@@ -377,21 +414,29 @@ body {
 
 .content-item-preview {
   font-family: 'Merriweather', serif;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
   line-height: 1.6;
   color: var(--ink-700);
   margin-top: var(--space-2);
+  word-wrap: break-word;
 }
 
 .content-item-meta {
   display: flex;
-  gap: var(--space-4);
-  font-size: 0.8rem;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: clamp(0.7rem, 1.5vw, 0.8rem);
   font-family: 'Courier Prime', monospace;
   color: var(--ink-600);
   margin-bottom: var(--space-3);
   border-bottom: 1px dashed var(--ink-300);
   padding-bottom: var(--space-2);
+}
+
+@media (min-width: 640px) {
+  .content-item-meta {
+    gap: var(--space-4);
+  }
 }
 
 /* Progress */
@@ -536,22 +581,30 @@ body {
 }
 
 .modal-header {
-  padding: var(--space-6);
+  padding: var(--space-4);
   border-bottom: 3px double var(--ink-900);
   background: var(--paper-200);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: var(--space-4);
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .modal-header {
+    padding: var(--space-6);
+    gap: var(--space-4);
+  }
 }
 
 .modal-title {
   font-family: 'Playfair Display', serif;
-  font-size: 2rem;
+  font-size: clamp(1.2rem, 4vw, 2rem);
   font-weight: 900;
   color: var(--ink-900);
   line-height: 1.2;
   flex: 1;
+  word-wrap: break-word;
 }
 
 .modal-close {
@@ -574,7 +627,13 @@ body {
 }
 
 .modal-body {
-  padding: var(--space-6);
+  padding: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .modal-body {
+    padding: var(--space-6);
+  }
 }
 
 .modal-meta {
@@ -643,12 +702,21 @@ body {
 }
 
 .modal-footer {
-  padding: var(--space-6);
+  padding: var(--space-4);
   border-top: 2px solid var(--ink-900);
   background: var(--paper-200);
   display: flex;
-  gap: var(--space-3);
-  justify-content: flex-end;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+@media (min-width: 640px) {
+  .modal-footer {
+    padding: var(--space-6);
+    flex-direction: row;
+    gap: var(--space-3);
+    justify-content: flex-end;
+  }
 }
 
 /* Utilities */
