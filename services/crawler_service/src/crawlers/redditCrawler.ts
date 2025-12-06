@@ -41,61 +41,81 @@ export class RedditCrawler {
     // Use Reddit JSON API (no auth needed for public posts)
     const url = `https://www.reddit.com/r/${subreddit}/hot.json?limit=25`;
     
-    // Reddit requires proper User-Agent and headers to avoid 403
-    const response = await axios.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'application/json',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'DNT': '1',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-      },
-      timeout: 15000,
-    });
-    
-    // Add delay to respect rate limits
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const posts = response.data.data.children;
-    const items: RawContentItem[] = [];
-
-    for (const post of posts) {
-      const data = post.data;
-
-      // Skip removed/deleted posts
-      if (data.removed_by_category || data.author === '[deleted]') {
-        continue;
-      }
-
-      // Combine title and selftext for text posts
-      const content = data.selftext 
-        ? `${data.title}\n\n${data.selftext}`
-        : data.title;
-
-      // Skip if too short
-      if (content.length < 50) {
-        continue;
-      }
-
-      const item: RawContentItem = {
-        source: `Reddit - r/${subreddit}`,
-        url: `https://www.reddit.com${data.permalink}`,
-        contentType: 'text',
-        rawText: content,
-        metadata: {
-          title: data.title,
-          author: data.author,
-          publishedAt: new Date(data.created_utc * 1000),
-          tags: [subreddit, `score:${data.score}`],
+    try {
+      // Reddit requires proper User-Agent and headers to avoid 403
+      const response = await axios.get(url, {
+        headers: {
+          'User-Agent': 'Veris/1.0 (Fact-checking bot; +https://veris.luex.shop)',
+          'Accept': 'application/json',
+          'Accept-Language': 'en-US,en;q=0.9',
         },
-      };
+        timeout: 15000,
+        validateStatus: (status) => status < 500, // Accept 4xx as valid to handle gracefully
+      });
+      
+      // Handle rate limiting
+      if (response.status === 429) {
+        logger.warn(`Reddit rate limited for r/${subreddit}, skipping`);
+        return [];
+      }
+      
+      // Handle 403 Forbidden
+      if (response.status === 403) {
+        logger.warn(`Reddit blocked request for r/${subreddit} (403), skipping`);
+        return [];
+      }
+      
+      if (response.status !== 200) {
+        logger.warn(`Reddit returned ${response.status} for r/${subreddit}, skipping`);
+        return [];
+      }
+      
+      // Add delay to respect rate limits
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      items.push(item);
+      const posts = response.data?.data?.children || [];
+      const items: RawContentItem[] = [];
+
+      for (const post of posts) {
+        const data = post.data;
+
+        // Skip removed/deleted posts
+        if (data.removed_by_category || data.author === '[deleted]') {
+          continue;
+        }
+
+        // Combine title and selftext for text posts
+        const content = data.selftext 
+          ? `${data.title}\n\n${data.selftext}`
+          : data.title;
+
+        // Skip if too short
+        if (content.length < 50) {
+          continue;
+        }
+
+        const item: RawContentItem = {
+          source: `Reddit - r/${subreddit}`,
+          url: `https://www.reddit.com${data.permalink}`,
+          contentType: 'text',
+          rawText: content,
+          metadata: {
+            title: data.title,
+            author: data.author,
+            publishedAt: new Date(data.created_utc * 1000),
+            tags: [subreddit, `score:${data.score}`],
+          },
+        };
+
+        items.push(item);
+      }
+
+      logger.info(`Crawled r/${subreddit}`, { postsFound: items.length });
+      return items;
+    } catch (error) {
+      // Log but don't throw - allow other sources to continue
+      logger.warn(`Failed to crawl r/${subreddit}`, { error: error instanceof Error ? error.message : String(error) });
+      return [];
     }
-
-    logger.info(`Crawled r/${subreddit}`, { postsFound: items.length });
-    return items;
   }
 }

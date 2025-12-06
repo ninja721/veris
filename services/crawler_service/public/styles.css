@@ -882,3 +882,100 @@ body.halloween .progress-fill {
       #ff8555 10px,
       #ff8555 20px);
 }
+
+/* Prevent horizontal overflow */
+body {
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Break long URLs and text */
+.source-item label,
+.content-item-preview,
+.content-item-title,
+.result-text,
+.modal-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Source list items */
+.source-item label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Remove extra space at bottom */
+.footer {
+  margin-top: var(--space-8);
+  margin-bottom: 0;
+}
+
+.main {
+  margin-bottom: 0;
+}
+
+/* Mobile Responsive Fixes */
+@media (max-width: 639px) {
+  .title {
+    font-size: 2rem !important;
+  }
+  
+  .subtitle {
+    font-size: 0.7rem !important;
+    letter-spacing: 0.05em !important;
+    padding: 0.5rem 1rem !important;
+  }
+  
+  .card-title {
+    font-size: 1.2rem !important;
+  }
+  
+  .content-item-title {
+    font-size: 1rem !important;
+    word-break: break-word;
+  }
+  
+  .content-item-meta {
+    flex-wrap: wrap;
+    gap: var(--space-2) !important;
+    font-size: 0.7rem !important;
+  }
+  
+  .content-item-meta span {
+    word-break: break-all;
+  }
+  
+  .header-actions {
+    flex-wrap: wrap;
+  }
+  
+  .btn {
+    font-size: 0.9rem;
+    padding: var(--space-2) var(--space-4);
+  }
+  
+  .modal-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .source-buttons .btn {
+    height: 120px;
+    font-size: 0.9rem;
+  }
+  
+  .container {
+    padding: var(--space-2);
+  }
+  
+  .card-content {
+    padding: var(--space-4);
+  }
+}
