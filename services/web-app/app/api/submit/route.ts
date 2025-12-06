@@ -120,20 +120,19 @@ export async function POST(request: Request) {
       parts.push({ text: text.trim() })
     }
 
-    const success = await adkClient.submitToAgent(parts)
-
-    if (success) {
-      return NextResponse.json({
-        success: true,
-        status: 'submitted',
-        message: 'Submitted for verification. Check Veris in 2-3 minutes!'
+    // Fire-and-forget: Return success immediately, submit in background
+    // This prevents user from waiting 2-3 minutes for AI processing
+    setImmediate(() => {
+      adkClient.submitToAgent(parts).catch(err => {
+        console.error('Background submission failed:', err)
       })
-    } else {
-      return NextResponse.json({
-        success: false,
-        message: 'Failed to submit. Please try again.'
-      }, { status: 500 })
-    }
+    })
+
+    return NextResponse.json({
+      success: true,
+      status: 'submitted',
+      message: 'Claim submitted! It will appear in the newspaper within 2-3 minutes after verification.'
+    })
   } catch {
     return NextResponse.json({
       success: false,

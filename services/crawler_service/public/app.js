@@ -42,6 +42,23 @@ function selectSourceType(type) {
   document.getElementById('step-2').classList.remove('hidden');
 
   renderSourceList();
+  
+  // Show Reddit warning if in production
+  if (type === 'reddit' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    showRedditWarning();
+  }
+}
+
+function showRedditWarning() {
+  const container = document.getElementById('source-list');
+  const warning = document.createElement('div');
+  warning.className = 'reddit-warning';
+  warning.style.cssText = 'background: #fff3cd; border: 2px solid #856404; padding: 1rem; margin-bottom: 1rem; font-family: "Courier Prime", monospace; font-size: 0.9rem;';
+  warning.innerHTML = `
+    <strong style="color: #856404;">⚠️ Reddit API Notice</strong>
+    <p style="margin: 0.5rem 0 0 0; color: #856404;">Reddit API requires approval for production use. This feature works locally but may be blocked in production. Try running locally to test Reddit crawling.</p>
+  `;
+  container.insertBefore(warning, container.firstChild);
 }
 
 // Render source selection list
