@@ -27,6 +27,8 @@ export default function VerisPage() {
   }, [])
 
   async function fetchClaims() {
+    setLoading(true)
+    setError(null)
     try {
       const res = await fetch('/api/claims?page=1&limit=100')
       const data = await res.json()

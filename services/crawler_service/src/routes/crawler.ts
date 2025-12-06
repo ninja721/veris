@@ -58,7 +58,7 @@ router.post('/fetch', async (req, res) => {
   }
 });
 
-// Process selected items
+// Process selected items (fire-and-forget)
 router.post('/process', async (req, res) => {
   try {
     const { items } = req.body;
@@ -69,27 +69,31 @@ router.post('/process', async (req, res) => {
 
     logger.info('Processing items', { count: items.length });
 
-    const adkClient = new ADKAgentClient();
-    const results = [];
-
-    for (const item of items) {
-      const success = await adkClient.processArticle(item);
-      results.push({
-        url: item.url,
-        success,
-      });
-      
-      // Small delay between requests
-      await new Promise(resolve => setTimeout(resolve, 2000));
-    }
-
-    const successCount = results.filter(r => r.success).length;
-    logger.info('Processing complete', { 
-      total: items.length, 
-      successful: successCount 
+    // Return success immediately, process in background
+    res.json({ 
+      results: items.map(item => ({ url: item.url, success: true })),
+      successCount: items.length,
+      message: 'Items queued for processing. Claims will appear in 2-3 minutes.'
     });
 
-    res.json({ results, successCount });
+    // Process in background
+    setImmediate(async () => {
+      const adkClient = new ADKAgentClient();
+      
+      for (const item of items) {
+        try {
+          await adkClient.processArticle(item);
+          logger.info('Item processed', { url: item.url });
+        } catch (error) {
+          logger.error('Item processing failed', { url: item.url, error });
+        }
+        
+        // Small delay between requests
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+      
+      logger.info('Background processing complete', { total: items.length });
+    });
   } catch (error) {
     logger.error('Process error', { error });
     res.status(500).json({ error: 'Failed to process items' });

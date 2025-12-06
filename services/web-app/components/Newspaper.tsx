@@ -243,9 +243,9 @@ export default function Newspaper({ claims }: NewspaperProps) {
                 </article>
               ))}
 
-              {/* Fill empty space if fewer than 5 claims */}
-              {pageClaims.length < 5 && Array.from({ length: 5 - pageClaims.length }).map((_, i) => (
-                <div key={`placeholder-${i}`} className="border-b border-ink-300 pb-4 last:border-0 opacity-30">
+              {/* Only show skeletons if there are some claims but not enough to fill the page */}
+              {sidebarClaims.length > 0 && sidebarClaims.length < 4 && Array.from({ length: 4 - sidebarClaims.length }).map((_, i) => (
+                <div key={`placeholder-${i}`} className="border-b border-ink-300 pb-4 last:border-0 opacity-20">
                   <div className="h-4 bg-ink-200 w-1/3 mb-2"></div>
                   <div className="h-6 bg-ink-200 w-3/4 mb-2"></div>
                   <div className="h-4 bg-ink-200 w-full mb-1"></div>
